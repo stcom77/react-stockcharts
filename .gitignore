@@ -7,3 +7,4 @@ node_modules
 .fuse*
 npm-debug.log
 .idea
+dist

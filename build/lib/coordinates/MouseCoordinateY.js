@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+exports.getYCoordinate = getYCoordinate;
+
 var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
@@ -112,23 +114,34 @@ MouseCoordinateY.defaultProps = {
 };
 
 function helper(props, moreProps) {
-	var chartId = moreProps.chartId,
-	    width = moreProps.width;
-	var show = moreProps.show,
-	    currentCharts = moreProps.currentCharts,
-	    yScale = moreProps.chartConfig.yScale,
+	var chartId = moreProps.chartId;
+	var currentCharts = moreProps.currentCharts,
 	    mouseXY = moreProps.mouseXY;
 
 
 	if ((0, _utils.isNotDefined)(mouseXY)) return null;
-
 	if (currentCharts.indexOf(chartId) < 0) return null;
 
+	var show = moreProps.show;
+
+	if (!show) return null;
+
+	var y = mouseXY[1];
+	var yScale = moreProps.chartConfig.yScale;
+	var displayFormat = props.displayFormat;
+
+
+	var coordinate = displayFormat(yScale.invert(y));
+
+	return getYCoordinate(y, coordinate, props, moreProps);
+}
+
+function getYCoordinate(y, displayValue, props, moreProps) {
+	var width = moreProps.width;
 	var orient = props.orient,
 	    at = props.at,
 	    rectWidth = props.rectWidth,
 	    rectHeight = props.rectHeight,
-	    displayFormat = props.displayFormat,
 	    dx = props.dx;
 	var fill = props.fill,
 	    opacity = props.opacity,
@@ -146,21 +159,29 @@ function helper(props, moreProps) {
 	var edgeAt = at === "right" ? width : 0;
 
 	var type = "horizontal";
-	var y = mouseXY[1];
-	var coordinate = displayFormat(yScale.invert(y));
 	var hideLine = true;
 
 	var coordinateProps = {
-		coordinate: coordinate,
-		show: show,
+		coordinate: displayValue,
+		show: true,
 		type: type,
 		orient: orient,
 		edgeAt: edgeAt,
 		hideLine: hideLine,
-		fill: fill, opacity: opacity, fontFamily: fontFamily, fontSize: fontSize, textFill: textFill,
-		stroke: stroke, strokeOpacity: strokeOpacity, strokeWidth: strokeWidth,
+		fill: fill,
+		opacity: opacity,
+
+		fontFamily: fontFamily,
+		fontSize: fontSize,
+		textFill: textFill,
+
+		stroke: stroke,
+		strokeOpacity: strokeOpacity,
+		strokeWidth: strokeWidth,
+
 		rectWidth: rectWidth,
 		rectHeight: rectHeight,
+
 		arrowWidth: arrowWidth,
 		dx: dx,
 		x1: x1,

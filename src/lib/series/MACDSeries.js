@@ -31,7 +31,7 @@ class MACDSeries extends Component {
 		return yScale(0);
 	}
 	render() {
-		const { className, opacity, divergenceStroke } = this.props;
+		const { className, opacity, divergenceStroke, widthRatio, width } = this.props;
 		const { stroke, fill } = this.props;
 
 		const { clip } = this.props;
@@ -42,7 +42,8 @@ class MACDSeries extends Component {
 				<BarSeries
 					baseAt={this.yAccessorForDivergenceBase}
 					className="macd-divergence"
-					widthRatio={0.5}
+					width={width}
+					widthRatio={widthRatio}
 					stroke={divergenceStroke}
 					fill={fill.divergence}
 					opacity={opacity}
@@ -78,8 +79,10 @@ MACDSeries.propTypes = {
 		signal: PropTypes.string.isRequired,
 	}).isRequired,
 	fill: PropTypes.shape({
-		divergence: PropTypes.string.isRequired,
+		divergence: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
 	}).isRequired,
+	widthRatio: PropTypes.number,
+	width: BarSeries.propTypes.width,
 };
 
 MACDSeries.defaultProps = {
@@ -89,6 +92,8 @@ MACDSeries.defaultProps = {
 	opacity: 0.6,
 	divergenceStroke: false,
 	clip: true,
+	widthRatio: 0.5,
+	width: BarSeries.defaultProps.width,
 };
 
 export default MACDSeries;

@@ -609,13 +609,10 @@ var ChartCanvas = function (_Component) {
 
 				var start = head(xScale.domain());
 				var end = xAccessor(firstItem);
-				var _props = this.props,
-				    onLoadMore = _props.onLoadMore,
-				    onZoomChange = _props.onZoomChange;
+				var onLoadMore = this.props.onLoadMore;
 
 
 				this.setState(state, function () {
-					onZoomChange(start, last(xScale.domain()));
 					if (start < end) {
 						onLoadMore(start, end);
 					}
@@ -631,9 +628,9 @@ var ChartCanvas = function (_Component) {
 			    xAccessor = _state4.xAccessor,
 			    initialXScale = _state4.xScale,
 			    initialPlotData = _state4.plotData;
-			var _props2 = this.props,
-			    zoomMultiplier = _props2.zoomMultiplier,
-			    zoomAnchor = _props2.zoomAnchor;
+			var _props = this.props,
+			    zoomMultiplier = _props.zoomMultiplier,
+			    zoomAnchor = _props.zoomAnchor;
 			var fullData = this.fullData;
 
 			var item = zoomAnchor({
@@ -664,9 +661,7 @@ var ChartCanvas = function (_Component) {
 
 			var start = head(xScale.domain());
 			var end = xAccessor(firstItem);
-			var _props3 = this.props,
-			    onLoadMore = _props3.onLoadMore,
-			    onZoomChange = _props3.onZoomChange;
+			var onLoadMore = this.props.onLoadMore;
 
 
 			this.mutableState = {
@@ -690,7 +685,6 @@ var ChartCanvas = function (_Component) {
 				plotData: plotData,
 				chartConfig: chartConfig
 			}, function () {
-				onZoomChange(start, last(xScale.domain()));
 				if (start < end) {
 					onLoadMore(start, end);
 				}
@@ -712,9 +706,7 @@ var ChartCanvas = function (_Component) {
 			var firstItem = head(fullData);
 			var start = head(xScale.domain());
 			var end = xAccessor(firstItem);
-			var _props4 = this.props,
-			    onLoadMore = _props4.onLoadMore,
-			    onZoomChange = _props4.onZoomChange;
+			var onLoadMore = this.props.onLoadMore;
 
 
 			this.setState({
@@ -722,7 +714,6 @@ var ChartCanvas = function (_Component) {
 				plotData: plotData,
 				chartConfig: chartConfig
 			}, function () {
-				onZoomChange(start, last(xScale.domain()));
 				if (start < end) onLoadMore(start, end);
 			});
 		}
@@ -886,9 +877,7 @@ var ChartCanvas = function (_Component) {
 				var end = xAccessor(firstItem);
 				// console.log(start, end, start < end ? "Load more" : "I have it");
 
-				var _props5 = _this5.props,
-				    onLoadMore = _props5.onLoadMore,
-				    onZoomChange = _props5.onZoomChange;
+				var onLoadMore = _this5.props.onLoadMore;
 
 
 				_this5.clearThreeCanvas();
@@ -898,12 +887,6 @@ var ChartCanvas = function (_Component) {
 					plotData: plotData,
 					chartConfig: chartConfig
 				}, function () {
-					var panStartStart = first(panStartXScale.domain()),
-					    panStartEnd = last(panStartXScale.domain()),
-					    panEndEnd = last(xScale.domain());
-					if (panStartEnd - panStartStart != panEndEnd - start) {
-						onZoomChange(start, panEndEnd);
-					}
 					if (start < end) onLoadMore(start, end);
 				});
 			});
@@ -1179,21 +1162,21 @@ var ChartCanvas = function (_Component) {
 	}, {
 		key: "render",
 		value: function render() {
-			var _props6 = this.props,
-			    type = _props6.type,
-			    height = _props6.height,
-			    width = _props6.width,
-			    margin = _props6.margin,
-			    className = _props6.className,
-			    zIndex = _props6.zIndex,
-			    defaultFocus = _props6.defaultFocus,
-			    ratio = _props6.ratio,
-			    mouseMoveEvent = _props6.mouseMoveEvent,
-			    panEvent = _props6.panEvent,
-			    zoomEvent = _props6.zoomEvent;
-			var _props7 = this.props,
-			    useCrossHairStyleCursor = _props7.useCrossHairStyleCursor,
-			    onSelect = _props7.onSelect;
+			var _props2 = this.props,
+			    type = _props2.type,
+			    height = _props2.height,
+			    width = _props2.width,
+			    margin = _props2.margin,
+			    className = _props2.className,
+			    zIndex = _props2.zIndex,
+			    defaultFocus = _props2.defaultFocus,
+			    ratio = _props2.ratio,
+			    mouseMoveEvent = _props2.mouseMoveEvent,
+			    panEvent = _props2.panEvent,
+			    zoomEvent = _props2.zoomEvent;
+			var _props3 = this.props,
+			    useCrossHairStyleCursor = _props3.useCrossHairStyleCursor,
+			    onSelect = _props3.onSelect;
 			var _state8 = this.state,
 			    plotData = _state8.plotData,
 			    xScale = _state8.xScale,
@@ -1319,7 +1302,6 @@ ChartCanvas.propTypes = {
 	defaultFocus: PropTypes.bool,
 	zoomMultiplier: PropTypes.number,
 	onLoadMore: PropTypes.func,
-	onZoomChange: PropTypes.func,
 	displayXAccessor: function displayXAccessor(props, propName /* , componentName */) {
 		if (isNotDefined(props[propName])) {
 			console.warn("`displayXAccessor` is not defined," + " will use the value from `xAccessor` as `displayXAccessor`." + " This might be ok if you do not use a discontinuous scale" + " but if you do, provide a `displayXAccessor` prop to `ChartCanvas`");
@@ -1351,7 +1333,6 @@ ChartCanvas.defaultProps = {
 	useCrossHairStyleCursor: true,
 	defaultFocus: true,
 	onLoadMore: noop,
-	onZoomChange: noop,
 	onSelect: noop,
 	mouseMoveEvent: true,
 	panEvent: true,

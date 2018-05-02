@@ -4,17 +4,20 @@ import PropTypes from "prop-types";
 import { noop } from "../../utils";
 import { saveNodeType, isHover } from "../utils";
 
-// import HoverTextNearMouse from "../components/HoverTextNearMouse";
-import InteractivePriceCoordinate from "../components/InteractivePriceCoordinate";
+import ClickableShape from "../components/ClickableShape";
+import InteractiveYCoordinate from "../components/InteractiveYCoordinate";
 
-class EachPriceCoordinate extends Component {
+class EachInteractiveYCoordinate extends Component {
 	constructor(props) {
 		super(props);
 
 		this.handleHover = this.handleHover.bind(this);
+		this.handleCloseIconHover = this.handleCloseIconHover.bind(this);
 
 		this.handleDragStart = this.handleDragStart.bind(this);
 		this.handleDrag = this.handleDrag.bind(this);
+
+		this.handleDelete = this.handleDelete.bind(this);
 
 		this.isHover = isHover.bind(this);
 		this.saveNodeType = saveNodeType.bind(this);
@@ -22,6 +25,7 @@ class EachPriceCoordinate extends Component {
 
 		this.state = {
 			hover: false,
+			closeIconHover: false,
 		};
 	}
 	handleDragStart(moreProps) {
@@ -51,10 +55,22 @@ class EachPriceCoordinate extends Component {
 
 		onDrag(index, newYValue);
 	}
+	handleDelete(moreProps) {
+		const { index, onDelete } = this.props;
+		onDelete(index, moreProps);
+	}
 	handleHover(moreProps) {
 		if (this.state.hover !== moreProps.hovering) {
 			this.setState({
-				hover: moreProps.hovering
+				hover: moreProps.hovering,
+				closeIconHover: moreProps.hovering ? this.state.closeIconHover : false
+			});
+		}
+	}
+	handleCloseIconHover(moreProps) {
+		if (this.state.closeIconHover !== moreProps.hovering) {
+			this.setState({
+				closeIconHover: moreProps.hovering
 			});
 		}
 	}
@@ -72,8 +88,14 @@ class EachPriceCoordinate extends Component {
 			// hoverText,
 			selected,
 			onDragComplete,
+			stroke,
+			strokeOpacity,
+			strokeDasharray,
+			strokeWidth,
+			edge,
+			textBox,
 		} = this.props;
-		const { hover } = this.state;
+		const { hover, closeIconHover } = this.state;
 
 		const hoverHandler = {
 			onHover: this.handleHover,
@@ -84,10 +106,10 @@ class EachPriceCoordinate extends Component {
 
 		return (
 			<g>
-				<InteractivePriceCoordinate
+				<InteractiveYCoordinate
 					ref={this.saveNodeType("priceCoordinate")}
-					selected={selected}
-					hovering={hover}
+					selected={selected && !closeIconHover}
+					hovering={hover || closeIconHover}
 					interactiveCursorClass="react-stockcharts-move-cursor"
 					{...hoverHandler}
 
@@ -103,7 +125,31 @@ class EachPriceCoordinate extends Component {
 					fontStyle={fontStyle}
 					fontWeight={fontWeight}
 					fontSize={fontSize}
+					stroke={stroke}
+					strokeOpacity={strokeOpacity}
+					strokeDasharray={strokeDasharray}
+					strokeWidth={strokeWidth}
 					text={text}
+					textBox={textBox}
+					edge={edge}
+				/>
+				<ClickableShape
+					show
+					hovering={closeIconHover}
+					text={text}
+					yValue={yValue}
+					fontFamily={fontFamily}
+					fontStyle={fontStyle}
+					fontWeight={fontWeight}
+					fontSize={fontSize}
+					textBox={textBox}
+
+					stroke={stroke}
+					strokeOpacity={strokeOpacity}
+
+					onHover={this.handleCloseIconHover}
+					onUnHover={this.handleCloseIconHover}
+					onClick={this.handleDelete}
 				/>
 				{/* <HoverTextNearMouse
 					show={hoverTextEnabled && hover && !selected}
@@ -114,12 +160,16 @@ class EachPriceCoordinate extends Component {
 	}
 }
 
-EachPriceCoordinate.propTypes = {
+EachInteractiveYCoordinate.propTypes = {
 	index: PropTypes.number,
 
 	yValue: PropTypes.number.isRequired,
 	bgFill: PropTypes.string.isRequired,
 	bgOpacity: PropTypes.number.isRequired,
+	stroke: PropTypes.string.isRequired,
+	strokeWidth: PropTypes.number.isRequired,
+	strokeOpacity: PropTypes.number.isRequired,
+	strokeDasharray: PropTypes.string.isRequired,
 	textFill: PropTypes.string.isRequired,
 
 	fontWeight: PropTypes.string.isRequired,
@@ -130,21 +180,22 @@ EachPriceCoordinate.propTypes = {
 	text: PropTypes.string.isRequired,
 	selected: PropTypes.bool.isRequired,
 
+	edge: PropTypes.object.isRequired,
+	textBox: PropTypes.object.isRequired,
+
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
+	onDelete: PropTypes.func.isRequired,
 };
 
-EachPriceCoordinate.defaultProps = {
+EachInteractiveYCoordinate.defaultProps = {
 	onDrag: noop,
 	onDragComplete: noop,
-	edgeStroke: "#000000",
-	edgeFill: "#FFFFFF",
-	edgeStrokeWidth: 2,
-	r: 5,
+
 	strokeWidth: 1,
 	opacity: 1,
 	selected: false,
 	fill: "#FFFFFF",
 };
 
-export default EachPriceCoordinate;
+export default EachInteractiveYCoordinate;

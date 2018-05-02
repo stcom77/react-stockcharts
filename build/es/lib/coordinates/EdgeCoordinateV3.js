@@ -16,10 +16,12 @@ export function renderSVG(props) {
 	    coordinate = void 0;
 
 	if (isDefined(edge.line)) {
+
 		line = React.createElement("line", {
 			className: "react-stockcharts-cross-hair",
 			strokeOpacity: edge.line.opacity,
 			stroke: edge.line.stroke,
+			strokeWidth: edge.line.strokeWidth,
 			strokeDasharray: getStrokeDasharray(edge.line.strokeDasharray),
 			x1: edge.line.x1,
 			y1: edge.line.y1,
@@ -104,7 +106,8 @@ function helper(props) {
 	    fontSize = props.fontSize,
 	    textFill = props.textFill,
 	    lineStroke = props.lineStroke,
-	    lineOpacity = props.lineOpacity;
+	    lineOpacity = props.lineOpacity,
+	    lineStrokeWidth = props.lineStrokeWidth;
 	var stroke = props.stroke,
 	    strokeOpacity = props.strokeOpacity,
 	    strokeWidth = props.strokeWidth;
@@ -134,7 +137,7 @@ function helper(props) {
 		if (type === "horizontal") {
 			edgeXRect = dx + (orient === "right" ? edgeAt + 1 : edgeAt - rectWidth - 1);
 			edgeYRect = y1 - rectHeight / 2 - strokeWidth;
-			edgeXText = dx + (orient === "right" ? edgeAt + rectWidth / 2 : edgeAt - rectWidth / 2);
+			edgeXText = dx + (orient === "right" ? edgeAt + rectWidth / 2 + 10 : edgeAt - rectWidth / 2 - 10);
 			edgeYText = y1;
 		} else {
 			var dy = orient === "bottom" ? strokeWidth - 1 : -strokeWidth + 1;
@@ -172,6 +175,7 @@ function helper(props) {
 		opacity: lineOpacity,
 		stroke: lineStroke,
 		strokeDasharray: lineStrokeDasharray,
+		strokeWidth: lineStrokeWidth,
 		x1: x1,
 		y1: y1,
 		x2: x2,

@@ -579,10 +579,9 @@ class ChartCanvas extends Component {
 
 			const start = head(xScale.domain());
 			const end = xAccessor(firstItem);
-			const { onLoadMore, onZoomChange } = this.props;
+			const { onLoadMore } = this.props;
 
 			this.setState(state, () => {
-        onZoomChange(start, last(xScale.domain()));
 				if (start < end) {
 					onLoadMore(start, end);
 				}
@@ -619,7 +618,7 @@ class ChartCanvas extends Component {
 
 		const start = head(xScale.domain());
 		const end = xAccessor(firstItem);
-    const { onLoadMore, onZoomChange } = this.props;
+		const { onLoadMore } = this.props;
 
 		this.mutableState = {
 			mouseXY: mouseXY,
@@ -642,7 +641,6 @@ class ChartCanvas extends Component {
 			plotData,
 			chartConfig,
 		}, () => {
-      onZoomChange(start, last(xScale.domain()));
 			if (start < end) {
 				onLoadMore(start, end);
 			}
@@ -657,14 +655,13 @@ class ChartCanvas extends Component {
 		const firstItem = head(fullData);
 		const start = head(xScale.domain());
 		const end = xAccessor(firstItem);
-    const { onLoadMore, onZoomChange } = this.props;
+		const { onLoadMore } = this.props;
 
 		this.setState({
 			xScale,
 			plotData,
 			chartConfig,
 		}, () => {
-      onZoomChange(start, last(xScale.domain()));
 			if (start < end) onLoadMore(start, end);
 		});
 	}
@@ -814,7 +811,7 @@ class ChartCanvas extends Component {
 			const end = xAccessor(firstItem);
 			// console.log(start, end, start < end ? "Load more" : "I have it");
 
-      const { onLoadMore, onZoomChange } = this.props;
+			const { onLoadMore } = this.props;
 
 			this.clearThreeCanvas();
 
@@ -823,13 +820,7 @@ class ChartCanvas extends Component {
 				plotData,
 				chartConfig,
 			}, () => {
-        const panStartStart = first(panStartXScale.domain()),
-          panStartEnd = last(panStartXScale.domain()),
-          panEndEnd = last(xScale.domain());
-        if ((panStartEnd - panStartStart) != (panEndEnd - start)) {
-          onZoomChange(start, panEndEnd);
-        }
-        if (start < end) onLoadMore(start, end);
+				if (start < end) onLoadMore(start, end);
 			});
 		});
 	}
@@ -1170,7 +1161,6 @@ ChartCanvas.propTypes = {
 	defaultFocus: PropTypes.bool,
 	zoomMultiplier: PropTypes.number,
 	onLoadMore: PropTypes.func,
-  onZoomChange: PropTypes.func,
 	displayXAccessor: function(props, propName/* , componentName */) {
 		if (isNotDefined(props[propName])) {
 			console.warn("`displayXAccessor` is not defined,"
@@ -1205,7 +1195,6 @@ ChartCanvas.defaultProps = {
 	useCrossHairStyleCursor: true,
 	defaultFocus: true,
 	onLoadMore: noop,
-  onZoomChange: noop,
 	onSelect: noop,
 	mouseMoveEvent: true,
 	panEvent: true,

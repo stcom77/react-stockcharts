@@ -70,6 +70,7 @@ PriceCoordinate.propTypes = {
 	opacity: PropTypes.number,
 	lineOpacity: PropTypes.number,
 	lineStroke: PropTypes.string,
+	lineStrokeWidth: PropTypes.number,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	fill: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
@@ -93,6 +94,7 @@ PriceCoordinate.defaultProps = {
 	opacity: 1,
 	lineOpacity: 0.2,
 	lineStroke: "#000000",
+	lineStrokeWidth: 1,
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 13,
 	textFill: "#FFFFFF",
@@ -128,7 +130,8 @@ function helper(props, moreProps) {
 	    textFill = props.textFill,
 	    arrowWidth = props.arrowWidth,
 	    lineOpacity = props.lineOpacity,
-	    lineStroke = props.lineStroke;
+	    lineStroke = props.lineStroke,
+	    lineStrokeWidth = props.lineStrokeWidth;
 
 
 	var x1 = 0,
@@ -152,6 +155,7 @@ function helper(props, moreProps) {
 		hideLine: hideLine,
 		lineOpacity: lineOpacity,
 		lineStroke: lineStroke,
+		lineStrokeWidth: lineStrokeWidth,
 		lineStrokeDasharray: strokeDasharray,
 		stroke: stroke,
 		strokeOpacity: strokeOpacity,

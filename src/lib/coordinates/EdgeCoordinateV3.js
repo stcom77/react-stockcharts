@@ -13,11 +13,13 @@ export function renderSVG(props) {
 	let line, coordinateBase, coordinate;
 
 	if (isDefined(edge.line)) {
+
 		line = (
 			<line
 				className="react-stockcharts-cross-hair"
 				strokeOpacity={edge.line.opacity}
 				stroke={edge.line.stroke}
+				strokeWidth={edge.line.strokeWidth}
 				strokeDasharray={getStrokeDasharray(edge.line.strokeDasharray)}
 				x1={edge.line.x1}
 				y1={edge.line.y1}
@@ -113,8 +115,9 @@ function helper(props) {
 		fontSize,
 		textFill,
 		lineStroke,
-		lineOpacity
-	} = props;
+		lineOpacity,
+    lineStrokeWidth
+  } = props;
 	const { stroke, strokeOpacity, strokeWidth } = props;
 	const { arrowWidth, rectWidth, rectHeight, rectRadius } = props;
 	const { x1, y1, x2, y2, dx } = props;
@@ -134,8 +137,8 @@ function helper(props) {
 			edgeXText =
 				dx +
 				(orient === "right"
-					? edgeAt + rectWidth / 2
-					: edgeAt - rectWidth / 2);
+					? edgeAt + rectWidth / 2 +10
+					: edgeAt - rectWidth / 2 - 10);
 			edgeYText = y1;
 		} else {
 			const dy = orient === "bottom" ? strokeWidth - 1 : -strokeWidth + 1;
@@ -179,6 +182,7 @@ function helper(props) {
 			opacity: lineOpacity,
 			stroke: lineStroke,
 			strokeDasharray: lineStrokeDasharray,
+      strokeWidth: lineStrokeWidth,
 			x1,
 			y1,
 			x2,

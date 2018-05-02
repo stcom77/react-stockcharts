@@ -1,3 +1,5 @@
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -14,14 +16,16 @@ import PropTypes from "prop-types";
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 import { isDefined, noop, hexToRGBA, getStrokeDasharrayCanvas } from "../../utils";
+import { drawOnCanvas as _drawOnCanvas } from "../../coordinates/EdgeCoordinateV3";
+import { getYCoordinate } from "../../coordinates/MouseCoordinateY";
 
-var InteractivePriceCoordinate = function (_Component) {
-	_inherits(InteractivePriceCoordinate, _Component);
+var InteractiveYCoordinate = function (_Component) {
+	_inherits(InteractiveYCoordinate, _Component);
 
-	function InteractivePriceCoordinate(props) {
-		_classCallCheck(this, InteractivePriceCoordinate);
+	function InteractiveYCoordinate(props) {
+		_classCallCheck(this, InteractiveYCoordinate);
 
-		var _this = _possibleConstructorReturn(this, (InteractivePriceCoordinate.__proto__ || Object.getPrototypeOf(InteractivePriceCoordinate)).call(this, props));
+		var _this = _possibleConstructorReturn(this, (InteractiveYCoordinate.__proto__ || Object.getPrototypeOf(InteractiveYCoordinate)).call(this, props));
 
 		_this.renderSVG = _this.renderSVG.bind(_this);
 		_this.drawOnCanvas = _this.drawOnCanvas.bind(_this);
@@ -29,26 +33,26 @@ var InteractivePriceCoordinate = function (_Component) {
 		return _this;
 	}
 
-	_createClass(InteractivePriceCoordinate, [{
+	_createClass(InteractiveYCoordinate, [{
 		key: "isHover",
 		value: function isHover(moreProps) {
-			var _props = this.props,
-			    onHover = _props.onHover,
-			    selected = _props.selected;
+			var onHover = this.props.onHover;
 
 
 			if (isDefined(onHover)) {
-				var _helper = helper(this.props, moreProps),
-				    x1 = _helper.x1,
-				    x2 = _helper.x2,
-				    y = _helper.y,
-				    rect = _helper.rect;
+				var values = helper(this.props, moreProps);
+				if (values == null) return false;
+
+				var x1 = values.x1,
+				    x2 = values.x2,
+				    y = values.y,
+				    rect = values.rect;
 
 				var _moreProps$mouseXY = _slicedToArray(moreProps.mouseXY, 2),
 				    mouseX = _moreProps$mouseXY[0],
 				    mouseY = _moreProps$mouseXY[1];
 
-				if (selected && mouseX >= rect.x && mouseX <= rect.x + rect.width && mouseY >= rect.y && mouseY <= rect.y + rect.height) {
+				if (mouseX >= rect.x && mouseX <= rect.x + this.width && mouseY >= rect.y && mouseY <= rect.y + rect.height) {
 					return true;
 				}
 				if (x1 <= mouseX && x2 >= mouseX && Math.abs(mouseY - y) < 4) {
@@ -60,54 +64,77 @@ var InteractivePriceCoordinate = function (_Component) {
 	}, {
 		key: "drawOnCanvas",
 		value: function drawOnCanvas(ctx, moreProps) {
+			var _props = this.props,
+			    bgFill = _props.bgFill,
+			    bgOpacity = _props.bgOpacity,
+			    textFill = _props.textFill,
+			    fontFamily = _props.fontFamily,
+			    fontSize = _props.fontSize,
+			    fontStyle = _props.fontStyle,
+			    fontWeight = _props.fontWeight,
+			    stroke = _props.stroke,
+			    strokeWidth = _props.strokeWidth,
+			    strokeOpacity = _props.strokeOpacity,
+			    strokeDasharray = _props.strokeDasharray,
+			    text = _props.text,
+			    textBox = _props.textBox,
+			    edge = _props.edge;
 			var _props2 = this.props,
-			    bgFill = _props2.bgFill,
-			    bgOpacity = _props2.bgOpacity,
-			    textFill = _props2.textFill,
-			    fontFamily = _props2.fontFamily,
-			    fontSize = _props2.fontSize,
-			    fontStyle = _props2.fontStyle,
-			    fontWeight = _props2.fontWeight;
-			var _props3 = this.props,
-			    selected = _props3.selected,
-			    hovering = _props3.hovering;
+			    selected = _props2.selected,
+			    hovering = _props2.hovering;
 
-			var _helper2 = helper(this.props, moreProps),
-			    x1 = _helper2.x1,
-			    x2 = _helper2.x2,
-			    y = _helper2.y,
-			    rect = _helper2.rect;
 
-			ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
-			ctx.strokeStyle = textFill;
+			var values = helper(this.props, moreProps);
+			if (values == null) return;
+
+			var x1 = values.x1,
+			    x2 = values.x2,
+			    y = values.y,
+			    rect = values.rect;
+
+
+			ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
 
 			ctx.beginPath();
 			if (selected || hovering) {
-				ctx.lineWidth = 2;
-				ctx.setLineDash(getStrokeDasharrayCanvas("LongDash"));
-				ctx.moveTo(x1, y);
-				ctx.lineTo(rect.x, y);
-
-				ctx.moveTo(rect.x + rect.width, y);
-				ctx.lineTo(x2, y);
-				ctx.stroke();
-
-				ctx.setLineDash([]);
-				ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
-				ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
-
-				ctx.fillStyle = textFill;
-				ctx.textBaseline = "middle";
-				ctx.textAlign = "start";
-				ctx.font = fontStyle + " " + fontWeight + " " + fontSize + "px " + fontFamily;
-				ctx.beginPath();
-				ctx.fillText("Alert", rect.x + 10, y);
+				ctx.lineWidth = strokeWidth + 1;
 			} else {
-				ctx.setLineDash(getStrokeDasharrayCanvas("ShortDash"));
-				ctx.moveTo(x1, y);
-				ctx.lineTo(x2, y);
-				ctx.stroke();
+				ctx.lineWidth = strokeWidth;
 			}
+			ctx.textBaseline = "middle";
+			ctx.textAlign = "start";
+			ctx.font = fontStyle + " " + fontWeight + " " + fontSize + "px " + fontFamily;
+
+			this.width = textBox.padding.left + ctx.measureText(text).width + textBox.padding.right + textBox.closeIcon.padding.left + textBox.closeIcon.width + textBox.closeIcon.padding.right;
+
+			ctx.setLineDash(getStrokeDasharrayCanvas(strokeDasharray));
+			ctx.moveTo(x1, y);
+			ctx.lineTo(rect.x, y);
+
+			ctx.moveTo(rect.x + this.width, y);
+			ctx.lineTo(x2, y);
+			ctx.stroke();
+
+			ctx.setLineDash([]);
+
+			ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
+
+			ctx.fillRect(rect.x, rect.y, this.width, rect.height);
+			ctx.strokeRect(rect.x, rect.y, this.width, rect.height);
+
+			ctx.fillStyle = textFill;
+
+			ctx.beginPath();
+			ctx.fillText(text, rect.x + 10, y);
+			var newEdge = _extends({}, edge, {
+				textFill: textFill,
+				fontFamily: fontFamily,
+				fontSize: fontSize,
+				opacity: bgOpacity
+			});
+			var yValue = edge.displayFormat(this.props.yValue);
+			var yCoord = getYCoordinate(y, yValue, newEdge, moreProps);
+			_drawOnCanvas(ctx, yCoord);
 		}
 	}, {
 		key: "renderSVG",
@@ -117,28 +144,28 @@ var InteractivePriceCoordinate = function (_Component) {
 	}, {
 		key: "render",
 		value: function render() {
+			var interactiveCursorClass = this.props.interactiveCursorClass;
+			var _props3 = this.props,
+			    onHover = _props3.onHover,
+			    onUnHover = _props3.onUnHover;
 			var _props4 = this.props,
-			    selected = _props4.selected,
-			    interactiveCursorClass = _props4.interactiveCursorClass;
-			var _props5 = this.props,
-			    onHover = _props5.onHover,
-			    onUnHover = _props5.onUnHover;
-			var _props6 = this.props,
-			    onDragStart = _props6.onDragStart,
-			    onDrag = _props6.onDrag,
-			    onDragComplete = _props6.onDragComplete;
+			    onDragStart = _props4.onDragStart,
+			    onDrag = _props4.onDrag,
+			    onDragComplete = _props4.onDragComplete;
 
 
 			return React.createElement(GenericChartComponent, {
+				clip: false,
+				xxxyyy: true,
 				isHover: this.isHover,
 
 				svgDraw: this.renderSVG,
 				canvasToDraw: getMouseCanvas,
 				canvasDraw: this.drawOnCanvas,
 
-				interactiveCursorClass: interactiveCursorClass,
-				selected: selected,
-				enableDragOnHover: true,
+				interactiveCursorClass: interactiveCursorClass
+				/* selected={selected} */
+				, enableDragOnHover: true,
 
 				onDragStart: onDragStart,
 				onDrag: onDrag,
@@ -151,35 +178,43 @@ var InteractivePriceCoordinate = function (_Component) {
 		}
 	}]);
 
-	return InteractivePriceCoordinate;
+	return InteractiveYCoordinate;
 }(Component);
 
 function helper(props, moreProps) {
-	var yValue = props.yValue;
+	var yValue = props.yValue,
+	    textBox = props.textBox;
 	var _moreProps$chartConfi = moreProps.chartConfig,
 	    width = _moreProps$chartConfi.width,
-	    yScale = _moreProps$chartConfi.yScale;
+	    yScale = _moreProps$chartConfi.yScale,
+	    height = _moreProps$chartConfi.height;
 
 
 	var y = Math.round(yScale(yValue));
-	var height = 24;
-	var rect = {
-		x: 20,
-		y: y - height / 2,
-		width: 80,
-		height: height
-	};
-	return {
-		x1: 0,
-		x2: width,
-		y: y,
-		rect: rect
-	};
+
+	if (y >= 0 && y <= height) {
+		var rect = {
+			x: textBox.left,
+			y: y - textBox.height / 2,
+			height: textBox.height
+		};
+		return {
+			x1: 0,
+			x2: width,
+			y: y,
+			rect: rect
+		};
+	}
 }
 
-InteractivePriceCoordinate.propTypes = {
+InteractiveYCoordinate.propTypes = {
 	bgFill: PropTypes.string.isRequired,
 	bgOpacity: PropTypes.number.isRequired,
+
+	stroke: PropTypes.string.isRequired,
+	strokeWidth: PropTypes.number.isRequired,
+	strokeOpacity: PropTypes.number.isRequired,
+	strokeDasharray: PropTypes.string.isRequired,
 
 	textFill: PropTypes.string.isRequired,
 	fontFamily: PropTypes.string.isRequired,
@@ -188,6 +223,9 @@ InteractivePriceCoordinate.propTypes = {
 	fontStyle: PropTypes.string.isRequired,
 
 	text: PropTypes.string.isRequired,
+	edge: PropTypes.object.isRequired,
+	textBox: PropTypes.object.isRequired,
+	yValue: PropTypes.number.isRequired,
 
 	onDragStart: PropTypes.func.isRequired,
 	onDrag: PropTypes.func.isRequired,
@@ -203,12 +241,11 @@ InteractivePriceCoordinate.propTypes = {
 	hovering: PropTypes.bool.isRequired
 };
 
-InteractivePriceCoordinate.defaultProps = {
+InteractiveYCoordinate.defaultProps = {
 	onDragStart: noop,
 	onDrag: noop,
 	onDragComplete: noop,
 
-	type: "SD", // standard dev
 	fontWeight: "normal", // standard dev
 
 	strokeWidth: 1,
@@ -217,5 +254,5 @@ InteractivePriceCoordinate.defaultProps = {
 	hovering: false
 };
 
-export default InteractivePriceCoordinate;
-//# sourceMappingURL=InteractivePriceCoordinate.js.map
+export default InteractiveYCoordinate;
+//# sourceMappingURL=InteractiveYCoordinate.js.map

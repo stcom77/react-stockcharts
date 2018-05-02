@@ -11,33 +11,34 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { isDefined, noop } from "../utils";
+import { format } from "d3-format";
+import { isDefined, noop, strokeDashTypes } from "../utils";
 
 import { getValueFromOverride, terminate, saveNodeType, isHoverForInteractiveType } from "./utils";
-import EachPriceCoordinate from "./wrapper/EachPriceCoordinate";
+import EachInteractiveYCoordinate from "./wrapper/EachInteractiveYCoordinate";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
 
-var InteractivePriceCoordinate = function (_Component) {
-	_inherits(InteractivePriceCoordinate, _Component);
+var InteractiveYCoordinate = function (_Component) {
+	_inherits(InteractiveYCoordinate, _Component);
 
-	function InteractivePriceCoordinate(props) {
-		_classCallCheck(this, InteractivePriceCoordinate);
+	function InteractiveYCoordinate(props) {
+		_classCallCheck(this, InteractiveYCoordinate);
 
-		var _this = _possibleConstructorReturn(this, (InteractivePriceCoordinate.__proto__ || Object.getPrototypeOf(InteractivePriceCoordinate)).call(this, props));
+		var _this = _possibleConstructorReturn(this, (InteractiveYCoordinate.__proto__ || Object.getPrototypeOf(InteractiveYCoordinate)).call(this, props));
 
 		_this.handleDrag = _this.handleDrag.bind(_this);
 		_this.handleDragComplete = _this.handleDragComplete.bind(_this);
 		_this.terminate = terminate.bind(_this);
 
 		_this.saveNodeType = saveNodeType.bind(_this);
-		_this.getSelectionState = isHoverForInteractiveType("alertList").bind(_this);
+		_this.getSelectionState = isHoverForInteractiveType("yCoordinateList").bind(_this);
 
 		_this.nodes = [];
 		_this.state = {};
 		return _this;
 	}
 
-	_createClass(InteractivePriceCoordinate, [{
+	_createClass(InteractiveYCoordinate, [{
 		key: "handleDrag",
 		value: function handleDrag(index, yValue) {
 			this.setState({
@@ -55,9 +56,9 @@ var InteractivePriceCoordinate = function (_Component) {
 			var override = this.state.override;
 
 			if (isDefined(override)) {
-				var alertList = this.props.alertList;
+				var yCoordinateList = this.props.yCoordinateList;
 
-				var newAlertList = alertList.map(function (each, idx) {
+				var newAlertList = yCoordinateList.map(function (each, idx) {
 					var selected = idx === override.index;
 					return selected ? _extends({}, each, {
 						yValue: override.yValue,
@@ -94,21 +95,24 @@ var InteractivePriceCoordinate = function (_Component) {
 		value: function render() {
 			var _this3 = this;
 
-			var alertList = this.props.alertList;
+			var _props = this.props,
+			    yCoordinateList = _props.yCoordinateList,
+			    onDelete = _props.onDelete;
 			var override = this.state.override;
 
 			return React.createElement(
 				"g",
 				null,
-				alertList.map(function (each, idx) {
+				yCoordinateList.map(function (each, idx) {
 					var props = each;
-					return React.createElement(EachPriceCoordinate, _extends({ key: idx,
+					return React.createElement(EachInteractiveYCoordinate, _extends({ key: idx,
 						ref: _this3.saveNodeType(idx),
 						index: idx
 					}, props, {
 						selected: each.selected,
 						yValue: getValueFromOverride(override, idx, "yValue", each.yValue),
 
+						onDelete: onDelete,
 						onDrag: _this3.handleDrag,
 						onDragComplete: _this3.handleDragComplete,
 						edgeInteractiveCursor: "react-stockcharts-move-cursor"
@@ -118,44 +122,106 @@ var InteractivePriceCoordinate = function (_Component) {
 		}
 	}]);
 
-	return InteractivePriceCoordinate;
+	return InteractiveYCoordinate;
 }(Component);
 
-InteractivePriceCoordinate.propTypes = {
+InteractiveYCoordinate.propTypes = {
 	onChoosePosition: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
 	onSelect: PropTypes.func,
+	onDelete: PropTypes.func,
 
 	defaultPriceCoordinate: PropTypes.shape({
 		bgFill: PropTypes.string.isRequired,
 		bgOpacity: PropTypes.number.isRequired,
+
+		stroke: PropTypes.string.isRequired,
+		strokeDasharray: PropTypes.oneOf(strokeDashTypes).isRequired,
+		strokeOpacity: PropTypes.number.isRequired,
+		strokeWidth: PropTypes.number.isRequired,
+
 		textFill: PropTypes.string.isRequired,
 		fontFamily: PropTypes.string.isRequired,
 		fontWeight: PropTypes.string.isRequired,
 		fontStyle: PropTypes.string.isRequired,
 		fontSize: PropTypes.number.isRequired,
-		text: PropTypes.string.isRequired
+		text: PropTypes.string.isRequired,
+
+		textBox: PropTypes.shape({
+			height: PropTypes.number.isRequired,
+			left: PropTypes.number.isRequired,
+			padding: PropTypes.shape({
+				left: PropTypes.number.isRequired,
+				right: PropTypes.number.isRequired
+			}),
+			closeIcon: PropTypes.shape({
+				padding: PropTypes.shape({
+					left: PropTypes.number.isRequired,
+					right: PropTypes.number.isRequired
+				}),
+				width: PropTypes.number.isRequired
+			})
+		}).isRequired,
+		edge: PropTypes.shape({
+			stroke: PropTypes.string.isRequired,
+			strokeOpacity: PropTypes.number.isRequired,
+			strokeWidth: PropTypes.number.isRequired,
+
+			fill: PropTypes.string.isRequired,
+			fillOpacity: PropTypes.number.isRequired
+		})
 	}).isRequired,
 
 	hoverText: PropTypes.object.isRequired,
-	alertList: PropTypes.array.isRequired,
+	yCoordinateList: PropTypes.array.isRequired,
 	enabled: PropTypes.bool.isRequired
 };
 
-InteractivePriceCoordinate.defaultProps = {
+InteractiveYCoordinate.defaultProps = {
 	onChoosePosition: noop,
 	onDragComplete: noop,
 	onSelect: noop,
+	onDelete: noop,
 
 	defaultPriceCoordinate: {
 		bgFill: "#FFFFFF",
 		bgOpacity: 1,
-		textFill: "#F10040",
+
+		stroke: "#6574CD",
+		strokeOpacity: 1,
+		strokeDasharray: "ShortDash2",
+		strokeWidth: 1,
+
+		textFill: "#6574CD",
 		fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 		fontSize: 12,
 		fontStyle: "normal",
 		fontWeight: "normal",
-		text: "Lorem ipsum..."
+		text: "Alert",
+		textBox: {
+			height: 24,
+			left: 20,
+			padding: { left: 10, right: 5 },
+			closeIcon: {
+				padding: { left: 5, right: 8 },
+				width: 8
+			}
+		},
+		edge: {
+			stroke: "#6574CD",
+			strokeOpacity: 1,
+			strokeWidth: 1,
+
+			fill: "#FFFFFF",
+			fillOpacity: 1,
+			orient: "right",
+			at: "right",
+			arrowWidth: 10,
+			dx: 0,
+			rectWidth: 50,
+			rectHeight: 20,
+			displayFormat: format(".2f")
+		}
 	},
 	hoverText: _extends({}, HoverTextNearMouse.defaultProps, {
 		enable: true,
@@ -163,15 +229,15 @@ InteractivePriceCoordinate.defaultProps = {
 		bgWidth: 175,
 		text: "Click and drag the edge circles"
 	}),
-	alertList: []
+	yCoordinateList: []
 };
 
-InteractivePriceCoordinate.contextTypes = {
+InteractiveYCoordinate.contextTypes = {
 	subscribe: PropTypes.func.isRequired,
 	unsubscribe: PropTypes.func.isRequired,
 	generateSubscriptionId: PropTypes.func.isRequired,
 	chartId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
 };
 
-export default InteractivePriceCoordinate;
-//# sourceMappingURL=InteractivePriceCoordinate.js.map
+export default InteractiveYCoordinate;
+//# sourceMappingURL=InteractiveYCoordinate.js.map
