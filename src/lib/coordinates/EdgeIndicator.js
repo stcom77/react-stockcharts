@@ -1,5 +1,3 @@
-
-
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { format } from "d3-format";
@@ -16,6 +14,7 @@ class EdgeIndicator extends Component {
 		this.renderSVG = this.renderSVG.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
+
 	drawOnCanvas(ctx, moreProps) {
 		const edge = helper(this.props, moreProps);
 		const props = {
@@ -24,6 +23,7 @@ class EdgeIndicator extends Component {
 		};
 		drawOnCanvas(ctx, props);
 	}
+
 	renderSVG(moreProps) {
 		const edge = helper(this.props, moreProps);
 		const props = {
@@ -32,6 +32,7 @@ class EdgeIndicator extends Component {
 		};
 		return renderSVG(props);
 	}
+
 	render() {
 		return <GenericChartComponent
 			edgeClip
@@ -67,6 +68,8 @@ EdgeIndicator.propTypes = {
 	displayFormat: PropTypes.func,
 	rectHeight: PropTypes.number,
 	rectWidth: PropTypes.number,
+	tickerWidth: PropTypes.number,
+	tickerHeight: PropTypes.number,
 	arrowWidth: PropTypes.number,
 	lineStrokeDasharray: PropTypes.oneOf(strokeDashTypes),
 };
@@ -81,7 +84,9 @@ EdgeIndicator.defaultProps = {
 	displayFormat: format(".2f"),
 	yAxisPad: 0,
 	rectHeight: 20,
+	tickerHeight: 16,
 	rectWidth: 50,
+	tickerWidth: 64,
 	arrowWidth: 10,
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 13,
@@ -117,7 +122,7 @@ function helper(props, moreProps) {
 function getEdge(props, moreProps, item) {
 	const { type: edgeType, displayFormat, edgeAt, yAxisPad, orient, lineStroke } = props;
 
-	const { yAccessor, fill, textFill, rectHeight, rectWidth, arrowWidth } = props;
+	const { yAccessor, fill, textFill, rectHeight, rectWidth, tickerHeight, tickerWidth, arrowWidth } = props;
 	const { fontFamily, fontSize } = props;
 	const { stroke } = props;
 
@@ -147,6 +152,7 @@ function getEdge(props, moreProps, item) {
 		fontFamily, fontSize,
 		textFill: functor(textFill)(item),
 		rectHeight, rectWidth, arrowWidth,
+		tickerHeight, tickerWidth,
 		x1,
 		y1,
 		x2: right,

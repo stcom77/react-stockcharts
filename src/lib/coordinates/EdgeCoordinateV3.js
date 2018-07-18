@@ -1,8 +1,7 @@
-
-
 import React from "react";
 
 import { hexToRGBA, isDefined, getStrokeDasharray } from "../utils";
+import TimeIndicator from './TimeIndicator';
 
 /* eslint-disable react/prop-types */
 export function renderSVG(props) {
@@ -10,7 +9,7 @@ export function renderSVG(props) {
 
 	const edge = helper(props);
 	if (edge === null) return null;
-	let line, coordinateBase, coordinate;
+	let line, coordinateBase, coordinate, timer;
 
 	if (isDefined(edge.line)) {
 
@@ -29,15 +28,15 @@ export function renderSVG(props) {
 		);
 	}
 	if (isDefined(edge.coordinateBase)) {
-		const { rectWidth, rectHeight, arrowWidth } = edge.coordinateBase;
+		const { rectWidth, rectHeight, arrowWidth, tickerWidth, tickerHeight } = edge.coordinateBase;
 
 		const path =
 			edge.orient === "left"
 				? `M0,0L0,${rectHeight}L${rectWidth},${rectHeight}L${rectWidth +
-					  arrowWidth},10L${rectWidth},0L0,0L0,0`
+				arrowWidth},10L${rectWidth},0L0,0L0,0`
 				: `M0,${arrowWidth}L${arrowWidth},${rectHeight}L${rectWidth +
-					  arrowWidth},${rectHeight}L${rectWidth +
-					  arrowWidth},0L${arrowWidth},0L0,${arrowWidth}`;
+				arrowWidth},${rectHeight}L${rectWidth +
+				arrowWidth},0L${arrowWidth},0L0,${arrowWidth}`;
 
 		coordinateBase =
 			edge.orient === "left" || edge.orient === "right" ? (
@@ -45,7 +44,7 @@ export function renderSVG(props) {
 					key={1}
 					transform={`translate(${edge.coordinateBase.edgeXRect},${
 						edge.coordinateBase.edgeYRect
-					})`}
+						})`}
 				>
 					<path
 						d={path}
@@ -87,15 +86,26 @@ export function renderSVG(props) {
 				{edge.coordinate.displayCoordinate}
 			</text>
 		);
+		timer = (
+			<TimeIndicator
+				width={tickerWidth}
+				height={tickerHeight}
+				fill={edge.coordinateBase.fill}
+				x={edge.coordinate.edgeXText - rectWidth / 2}
+				y={edge.coordinate.edgeYText + rectHeight / 2}
+			/>
+		);
 	}
 	return (
 		<g className={className}>
 			{line}
 			{coordinateBase}
 			{coordinate}
+			{timer}
 		</g>
 	);
 }
+
 /* eslint-enable react/prop-types */
 
 function helper(props) {
@@ -116,10 +126,10 @@ function helper(props) {
 		textFill,
 		lineStroke,
 		lineOpacity,
-    lineStrokeWidth
-  } = props;
+		lineStrokeWidth
+	} = props;
 	const { stroke, strokeOpacity, strokeWidth } = props;
-	const { arrowWidth, rectWidth, rectHeight, rectRadius } = props;
+	const { arrowWidth, rectWidth, rectHeight, rectRadius, tickerWidth, tickerHeight } = props;
 	const { x1, y1, x2, y2, dx } = props;
 
 	if (!show) return null;
@@ -137,7 +147,7 @@ function helper(props) {
 			edgeXText =
 				dx +
 				(orient === "right"
-					? edgeAt + rectWidth / 2 +10
+					? edgeAt + rectWidth / 2 + 10
 					: edgeAt - rectWidth / 2 - 10);
 			edgeYText = y1;
 		} else {
@@ -157,6 +167,8 @@ function helper(props) {
 			edgeYRect,
 			rectHeight: rectHeight + strokeWidth,
 			rectWidth,
+			tickerWidth,
+			tickerHeight,
 			rectRadius,
 			fill,
 			opacity,
@@ -182,7 +194,7 @@ function helper(props) {
 			opacity: lineOpacity,
 			stroke: lineStroke,
 			strokeDasharray: lineStrokeDasharray,
-      strokeWidth: lineStrokeWidth,
+			strokeWidth: lineStrokeWidth,
 			x1,
 			y1,
 			x2,

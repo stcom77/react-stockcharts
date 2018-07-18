@@ -3,6 +3,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 import React from "react";
 
 import { hexToRGBA, isDefined, getStrokeDasharray } from "../utils";
+import TimeIndicator from './TimeIndicator';
 
 /* eslint-disable react/prop-types */
 export function renderSVG(props) {
@@ -13,7 +14,8 @@ export function renderSVG(props) {
 	if (edge === null) return null;
 	var line = void 0,
 	    coordinateBase = void 0,
-	    coordinate = void 0;
+	    coordinate = void 0,
+	    timer = void 0;
 
 	if (isDefined(edge.line)) {
 
@@ -33,7 +35,9 @@ export function renderSVG(props) {
 		var _edge$coordinateBase = edge.coordinateBase,
 		    rectWidth = _edge$coordinateBase.rectWidth,
 		    rectHeight = _edge$coordinateBase.rectHeight,
-		    arrowWidth = _edge$coordinateBase.arrowWidth;
+		    arrowWidth = _edge$coordinateBase.arrowWidth,
+		    tickerWidth = _edge$coordinateBase.tickerWidth,
+		    tickerHeight = _edge$coordinateBase.tickerHeight;
 
 
 		var path = edge.orient === "left" ? "M0,0L0," + rectHeight + "L" + rectWidth + "," + rectHeight + "L" + (rectWidth + arrowWidth) + ",10L" + rectWidth + ",0L0,0L0,0" : "M0," + arrowWidth + "L" + arrowWidth + "," + rectHeight + "L" + (rectWidth + arrowWidth) + "," + rectHeight + "L" + (rectWidth + arrowWidth) + ",0L" + arrowWidth + ",0L0," + arrowWidth;
@@ -81,15 +85,24 @@ export function renderSVG(props) {
 			},
 			edge.coordinate.displayCoordinate
 		);
+		timer = React.createElement(TimeIndicator, {
+			width: tickerWidth,
+			height: tickerHeight,
+			fill: edge.coordinateBase.fill,
+			x: edge.coordinate.edgeXText - rectWidth / 2,
+			y: edge.coordinate.edgeYText + rectHeight / 2
+		});
 	}
 	return React.createElement(
 		"g",
 		{ className: className },
 		line,
 		coordinateBase,
-		coordinate
+		coordinate,
+		timer
 	);
 }
+
 /* eslint-enable react/prop-types */
 
 function helper(props) {
@@ -114,7 +127,9 @@ function helper(props) {
 	var arrowWidth = props.arrowWidth,
 	    rectWidth = props.rectWidth,
 	    rectHeight = props.rectHeight,
-	    rectRadius = props.rectRadius;
+	    rectRadius = props.rectRadius,
+	    tickerWidth = props.tickerWidth,
+	    tickerHeight = props.tickerHeight;
 	var x1 = props.x1,
 	    y1 = props.y1,
 	    x2 = props.x2,
@@ -152,6 +167,8 @@ function helper(props) {
 			edgeYRect: edgeYRect,
 			rectHeight: rectHeight + strokeWidth,
 			rectWidth: rectWidth,
+			tickerWidth: tickerWidth,
+			tickerHeight: tickerHeight,
 			rectRadius: rectRadius,
 			fill: fill,
 			opacity: opacity,

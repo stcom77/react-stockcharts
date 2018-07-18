@@ -94,6 +94,8 @@ EdgeIndicator.propTypes = {
 	displayFormat: _propTypes2.default.func,
 	rectHeight: _propTypes2.default.number,
 	rectWidth: _propTypes2.default.number,
+	tickerWidth: _propTypes2.default.number,
+	tickerHeight: _propTypes2.default.number,
 	arrowWidth: _propTypes2.default.number,
 	lineStrokeDasharray: _propTypes2.default.oneOf(_utils.strokeDashTypes)
 };
@@ -108,7 +110,9 @@ EdgeIndicator.defaultProps = {
 	displayFormat: (0, _d3Format.format)(".2f"),
 	yAxisPad: 0,
 	rectHeight: 20,
+	tickerHeight: 16,
 	rectWidth: 50,
+	tickerWidth: 50,
 	arrowWidth: 10,
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 13,
@@ -151,6 +155,8 @@ function getEdge(props, moreProps, item) {
 	    textFill = props.textFill,
 	    rectHeight = props.rectHeight,
 	    rectWidth = props.rectWidth,
+	    tickerHeight = props.tickerHeight,
+	    tickerWidth = props.tickerWidth,
 	    arrowWidth = props.arrowWidth;
 	var fontFamily = props.fontFamily,
 	    fontSize = props.fontSize;
@@ -185,6 +191,7 @@ function getEdge(props, moreProps, item) {
 		fontFamily: fontFamily, fontSize: fontSize,
 		textFill: (0, _utils.functor)(textFill)(item),
 		rectHeight: rectHeight, rectWidth: rectWidth, arrowWidth: arrowWidth,
+		tickerHeight: tickerHeight, tickerWidth: tickerWidth,
 		x1: x1,
 		y1: y1,
 		x2: right,

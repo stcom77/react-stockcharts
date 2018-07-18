@@ -1,27 +1,32 @@
-
-
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
 import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV3";
+
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
-import { functor, strokeDashTypes } from "../utils";
+import { functor, getStrokeDasharray, hexToRGBA, isDefined, strokeDashTypes } from "../utils";
 
-class PriceCoordinate extends Component {
+class AlertCoordinate extends Component {
 	constructor(props) {
 		super(props);
 		this.renderSVG = this.renderSVG.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
+
 	drawOnCanvas(ctx, moreProps) {
 		const props = helper(this.props, moreProps);
 		drawOnCanvas(ctx, props);
 	}
+
 	renderSVG(moreProps) {
 		const props = helper(this.props, moreProps);
 		return renderSVG(props);
 	}
+
+	handleMouseOver = (e) => {
+		console.log(e);
+	}
+
 	render() {
 		return <GenericChartComponent
 			clip={false}
@@ -29,11 +34,12 @@ class PriceCoordinate extends Component {
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getAxisCanvas}
 			drawOn={["pan"]}
+			onMouseOver={this.handleMouseOver}
 		/>;
 	}
 }
 
-PriceCoordinate.propTypes = {
+AlertCoordinate.propTypes = {
 	displayFormat: PropTypes.func.isRequired,
 	yAxisPad: PropTypes.number,
 	rectWidth: PropTypes.number,
@@ -63,7 +69,7 @@ PriceCoordinate.propTypes = {
 	]),
 };
 
-PriceCoordinate.defaultProps = {
+AlertCoordinate.defaultProps = {
 	yAxisPad: 0,
 	rectWidth: 50,
 	rectHeight: 20,
@@ -76,7 +82,7 @@ PriceCoordinate.defaultProps = {
 	opacity: 1,
 	lineOpacity: 0.2,
 	lineStroke: "#000000",
-    lineStrokeWidth: 1,
+	lineStrokeWidth: 1,
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 13,
 	textFill: "#FFFFFF",
@@ -116,7 +122,7 @@ function helper(props, moreProps) {
 		hideLine,
 		lineOpacity,
 		lineStroke,
-    lineStrokeWidth,
+		lineStrokeWidth,
 		lineStrokeDasharray: strokeDasharray,
 		stroke,
 		strokeOpacity,
@@ -136,4 +142,4 @@ function helper(props, moreProps) {
 	return coordinateProps;
 }
 
-export default PriceCoordinate;
+export default AlertCoordinate;
