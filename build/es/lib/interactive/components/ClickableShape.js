@@ -14,8 +14,9 @@ import PropTypes from "prop-types";
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 
-import { isHovering2 } from "./StraightLine";
-import { hexToRGBA } from "../../utils";
+import { isHovering2, generateLine } from "./StraightLine";
+import { hexToRGBA, getStrokeDasharray } from "../../utils";
+import Times from './Times';
 
 var ClickableShape = function (_Component) {
 	_inherits(ClickableShape, _Component);
@@ -27,6 +28,7 @@ var ClickableShape = function (_Component) {
 
 		_this.saveNode = _this.saveNode.bind(_this);
 		_this.drawOnCanvas = _this.drawOnCanvas.bind(_this);
+		_this.renderSVG = _this.renderSVG.bind(_this);
 		_this.isHover = _this.isHover.bind(_this);
 		return _this;
 	}
@@ -89,8 +91,55 @@ var ClickableShape = function (_Component) {
 		}
 	}, {
 		key: "renderSVG",
-		value: function renderSVG() {
-			throw new Error("svg not implemented");
+		value: function renderSVG(props, moreProps, ctx) {
+			var stroke = props.stroke,
+			    strokeWidth = props.strokeWidth,
+			    strokeOpacity = props.strokeOpacity,
+			    fill = props.fill,
+			    strokeDasharray = props.strokeDasharray,
+			    text = props.text,
+			    fontFamily = props.fontFamily,
+			    fontSize = props.fontSize,
+			    textAnchor = props.textAnchor;
+
+			var _helper3 = helper(this.props, moreProps, {}),
+			    _helper4 = _slicedToArray(_helper3, 3),
+			    x = _helper4[0],
+			    y = _helper4[1],
+			    icon = _helper4[2];
+
+			var line = React.createElement(Times, {
+				stroke: stroke,
+				strokeWidth: strokeWidth,
+				x1: icon.x1,
+				y1: icon.y1,
+				x2: icon.x2,
+				y2: icon.y2
+			});
+
+			var textCoordinate = React.createElement(
+				"text",
+				{
+					key: 2,
+					x: x,
+					y: y,
+					fontFamily: fontFamily,
+					fontSize: fontSize,
+					dy: ".32em",
+					fill: stroke,
+					textAnchor: textAnchor
+				},
+				text
+			);
+
+			return [textCoordinate, line];
+
+			// return <circle cx={x} cy={y} r={r}
+			// 			   strokeWidth={strokeWidth}
+			// 			   stroke={stroke}
+			// 			   strokeOpacity={strokeOpacity}
+			// 			   fill={fill}
+			// />;
 		}
 	}, {
 		key: "render",
@@ -106,17 +155,12 @@ var ClickableShape = function (_Component) {
 			return show ? React.createElement(GenericChartComponent, { ref: this.saveNode,
 				interactiveCursorClass: interactiveCursorClass,
 				isHover: this.isHover,
-
 				onClickWhenHover: onClick,
-
 				svgDraw: this.renderSVG,
-
 				canvasDraw: this.drawOnCanvas,
 				canvasToDraw: getMouseCanvas,
-
 				onHover: onHover,
 				onUnHover: onUnHover,
-
 				drawOn: ["pan", "mousemove", "drag"]
 			}) : null;
 		}
@@ -125,28 +169,35 @@ var ClickableShape = function (_Component) {
 	return ClickableShape;
 }(Component);
 
-function helper(props, moreProps, ctx) {
+function helper(props, moreProps) {
+	var ctx = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 	var yValue = props.yValue,
 	    text = props.text,
-	    textBox = props.textBox;
-	var fontFamily = props.fontFamily,
-	    fontStyle = props.fontStyle,
-	    fontWeight = props.fontWeight,
-	    fontSize = props.fontSize;
-
-	ctx.font = fontStyle + " " + fontWeight + " " + fontSize + "px " + fontFamily;
-
-	var yScale = moreProps.chartConfig.yScale;
+	    textBox = props.textBox,
+	    at = props.at;
+	var _moreProps$chartConfi = moreProps.chartConfig,
+	    yScale = _moreProps$chartConfi.yScale,
+	    width = _moreProps$chartConfi.width;
 
 
-	var x = textBox.left + textBox.padding.left + ctx.measureText(text).width + textBox.padding.right + textBox.closeIcon.padding.left + textBox.closeIcon.width / 2;
-
+	var textWidth = 20;
 	var y = yScale(yValue);
+	var x = at === "left" ? textBox.left + textBox.padding.left : width - textBox.width - textBox.left + textBox.padding.left;
 
-	return [x, y];
+	var textRightBorder = x + textWidth + textBox.padding.right;
+	var iconLeftBorder = textRightBorder + textBox.closeIcon.padding.left;
+	var icon = {
+		x1: iconLeftBorder,
+		y1: y - textBox.closeIcon.width / 2,
+		x2: iconLeftBorder + textBox.closeIcon.width,
+		y2: y + textBox.closeIcon.width / 2
+	};
+
+	return [x, y, icon];
 }
 
 ClickableShape.propTypes = {
+	at: PropTypes.oneOf(["left", "right"]),
 	stroke: PropTypes.string.isRequired,
 	strokeOpacity: PropTypes.number.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
@@ -160,6 +211,7 @@ ClickableShape.propTypes = {
 };
 
 ClickableShape.defaultProps = {
+	at: 'right',
 	show: false,
 	fillOpacity: 1,
 	strokeOpacity: 1,

@@ -112,6 +112,7 @@ var EachInteractiveYCoordinate = function (_Component) {
 		key: "render",
 		value: function render() {
 			var _props3 = this.props,
+			    at = _props3.at,
 			    yValue = _props3.yValue,
 			    bgFill = _props3.bgFill,
 			    bgOpacity = _props3.bgOpacity,
@@ -128,7 +129,9 @@ var EachInteractiveYCoordinate = function (_Component) {
 			    strokeDasharray = _props3.strokeDasharray,
 			    strokeWidth = _props3.strokeWidth,
 			    edge = _props3.edge,
-			    textBox = _props3.textBox;
+			    textBox = _props3.textBox,
+			    rectWidth = _props3.rectWidth,
+			    rectHeight = _props3.rectHeight;
 			var _state = this.state,
 			    hover = _state.hover,
 			    closeIconHover = _state.closeIconHover;
@@ -169,7 +172,10 @@ var EachInteractiveYCoordinate = function (_Component) {
 					strokeWidth: strokeWidth,
 					text: text,
 					textBox: textBox,
-					edge: edge
+					edge: edge,
+					rectWidth: rectWidth,
+					rectHeight: rectHeight,
+					at: at
 				})),
 				React.createElement(ClickableShape, {
 					show: true,
@@ -198,6 +204,7 @@ var EachInteractiveYCoordinate = function (_Component) {
 
 EachInteractiveYCoordinate.propTypes = {
 	index: PropTypes.number,
+	at: PropTypes.oneOf(["left", "right"]),
 
 	yValue: PropTypes.number.isRequired,
 	bgFill: PropTypes.string.isRequired,
@@ -221,17 +228,23 @@ EachInteractiveYCoordinate.propTypes = {
 
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
-	onDelete: PropTypes.func.isRequired
+	onDelete: PropTypes.func.isRequired,
+	rectWidth: PropTypes.number,
+	rectHeight: PropTypes.number
 };
 
 EachInteractiveYCoordinate.defaultProps = {
+	at: 'left',
+
 	onDrag: noop,
 	onDragComplete: noop,
 
 	strokeWidth: 1,
 	opacity: 1,
 	selected: false,
-	fill: "#FFFFFF"
+	fill: "#FFFFFF",
+	rectWidth: 50,
+	rectHeight: 20
 };
 
 export default EachInteractiveYCoordinate;

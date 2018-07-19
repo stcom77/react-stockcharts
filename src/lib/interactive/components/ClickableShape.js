@@ -4,19 +4,23 @@ import PropTypes from "prop-types";
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 
-import { isHovering2 } from "./StraightLine";
-import { hexToRGBA } from "../../utils";
+import { isHovering2, generateLine } from "./StraightLine";
+import { hexToRGBA, getStrokeDasharray } from "../../utils";
+import Times from './Times';
 
 class ClickableShape extends Component {
 	constructor(props) {
 		super(props);
 		this.saveNode = this.saveNode.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+    this.renderSVG = this.renderSVG.bind(this);
 		this.isHover = this.isHover.bind(this);
 	}
+
 	saveNode(node) {
 		this.node = node;
 	}
+
 	isHover(moreProps) {
 		const { mouseXY } = moreProps;
 		if (this.closeIcon) {
@@ -35,6 +39,7 @@ class ClickableShape extends Component {
 		}
 		return false;
 	}
+
 	drawOnCanvas(ctx, moreProps) {
 		const { stroke, strokeWidth, strokeOpacity, hovering, textBox } = this.props;
 
@@ -52,9 +57,49 @@ class ClickableShape extends Component {
 		ctx.lineTo(x + halfWidth, y - halfWidth);
 		ctx.stroke();
 	}
-	renderSVG() {
-		throw new Error("svg not implemented");
+
+	renderSVG(props, moreProps, ctx) {
+		const { stroke, strokeWidth, strokeOpacity, fill, strokeDasharray, text, fontFamily, fontSize, textAnchor } = props;
+
+    const [x, y, icon] = helper(this.props, moreProps, {});
+
+    const line = (<Times
+      stroke={stroke}
+      strokeWidth={strokeWidth}
+      x1={icon.x1}
+      y1={icon.y1}
+      x2={icon.x2}
+      y2={icon.y2}
+    />);
+
+    const textCoordinate = (
+      <text
+        key={2}
+        x={x}
+        y={y}
+        fontFamily={fontFamily}
+        fontSize={fontSize}
+        dy=".32em"
+        fill={stroke}
+        textAnchor={textAnchor}
+      >
+        {text}
+      </text>
+    );
+
+    return [
+      textCoordinate,
+      line
+    ];
+
+    // return <circle cx={x} cy={y} r={r}
+		// 			   strokeWidth={strokeWidth}
+		// 			   stroke={stroke}
+		// 			   strokeOpacity={strokeOpacity}
+		// 			   fill={fill}
+		// />;
 	}
+
 	render() {
 		const { interactiveCursorClass } = this.props;
 		const { show } = this.props;
@@ -62,46 +107,45 @@ class ClickableShape extends Component {
 
 		return show
 			? <GenericChartComponent ref={this.saveNode}
-				interactiveCursorClass={interactiveCursorClass}
-				isHover={this.isHover}
-
-				onClickWhenHover={onClick}
-
-				svgDraw={this.renderSVG}
-
-				canvasDraw={this.drawOnCanvas}
-				canvasToDraw={getMouseCanvas}
-
-				onHover={onHover}
-				onUnHover={onUnHover}
-
-				drawOn={["pan", "mousemove", "drag"]}
+									 interactiveCursorClass={interactiveCursorClass}
+									 isHover={this.isHover}
+									 onClickWhenHover={onClick}
+									 svgDraw={this.renderSVG}
+									 canvasDraw={this.drawOnCanvas}
+									 canvasToDraw={getMouseCanvas}
+									 onHover={onHover}
+									 onUnHover={onUnHover}
+									 drawOn={["pan", "mousemove", "drag"]}
 			/>
 			: null;
 	}
 }
 
-function helper(props, moreProps, ctx) {
-	const { yValue, text, textBox } = props;
-	const { fontFamily, fontStyle, fontWeight, fontSize } = props;
-	ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
+function helper(props, moreProps, ctx = {}) {
+  const { yValue, text, textBox, at } = props;
 
-	const { chartConfig: { yScale } } = moreProps;
+  const { chartConfig: { yScale, width } } = moreProps;
 
-	const x = textBox.left
-		+ textBox.padding.left
-		+ ctx.measureText(text).width
-		+ textBox.padding.right
-		+ textBox.closeIcon.padding.left
-		+ textBox.closeIcon.width / 2;
+  const textWidth = 20;
+  const y = yScale(yValue);
+  const x = at === "left" ? textBox.left + textBox.padding.left : (width - textBox.width - textBox.left + textBox.padding.left);
 
-	const y = yScale(yValue);
+  const textRightBorder = x + textWidth + textBox.padding.right;
+  const iconLeftBorder = textRightBorder + textBox.closeIcon.padding.left;
+  const icon = {
+    x1: iconLeftBorder,
+    y1: y - (textBox.closeIcon.width / 2),
+    x2: iconLeftBorder + textBox.closeIcon.width,
+    y2: y + (textBox.closeIcon.width / 2)
+  };
 
-	return [x, y];
+
+  return [x, y, icon];
 
 }
 
 ClickableShape.propTypes = {
+  at: PropTypes.oneOf(["left", "right"]),
 	stroke: PropTypes.string.isRequired,
 	strokeOpacity: PropTypes.number.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
@@ -116,6 +160,7 @@ ClickableShape.propTypes = {
 
 
 ClickableShape.defaultProps = {
+  at: 'right',
 	show: false,
 	fillOpacity: 1,
 	strokeOpacity: 1,

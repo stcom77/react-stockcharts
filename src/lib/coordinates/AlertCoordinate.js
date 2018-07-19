@@ -4,7 +4,7 @@ import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV3";
 
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
-import { functor, getStrokeDasharray, hexToRGBA, isDefined, strokeDashTypes } from "../utils";
+import { functor, strokeDashTypes } from "../utils";
 
 class AlertCoordinate extends Component {
 	constructor(props) {

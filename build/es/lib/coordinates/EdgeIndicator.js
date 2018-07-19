@@ -94,7 +94,7 @@ EdgeIndicator.defaultProps = {
 	rectHeight: 20,
 	tickerHeight: 16,
 	rectWidth: 50,
-	tickerWidth: 50,
+	tickerWidth: 64,
 	arrowWidth: 10,
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 13,

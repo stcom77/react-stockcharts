@@ -158,19 +158,77 @@ var InteractiveYCoordinate = function (_Component) {
 	}, {
 		key: "renderSVG",
 		value: function renderSVG() {
-			throw new Error("svg not implemented");
+			var _props3 = this.props,
+			    bgFill = _props3.bgFill,
+			    bgOpacity = _props3.bgOpacity,
+			    textFill = _props3.textFill,
+			    fontFamily = _props3.fontFamily,
+			    fontSize = _props3.fontSize,
+			    fontStyle = _props3.fontStyle,
+			    fontWeight = _props3.fontWeight,
+			    stroke = _props3.stroke,
+			    strokeWidth = _props3.strokeWidth,
+			    strokeOpacity = _props3.strokeOpacity,
+			    strokeDasharray = _props3.strokeDasharray,
+			    text = _props3.text,
+			    textBox = _props3.textBox,
+			    edge = _props3.edge,
+			    rectWidth = _props3.rectWidth,
+			    rectHeight = _props3.rectHeight,
+			    textAnchor = _props3.textAnchor;
+			var _props4 = this.props,
+			    selected = _props4.selected,
+			    hovering = _props4.hovering;
+
+
+			var values = helper(this.props, moreProps);
+			if (values == null) return;
+
+			var x1 = values.x1,
+			    x2 = values.x2,
+			    y = values.y,
+			    rect = values.rect;
+
+
+			var textWidth = textBox.padding.left + 30 + textBox.padding.right + textBox.closeIcon.padding.left + textBox.closeIcon.width + textBox.closeIcon.padding.right;
+
+			var line = _react2.default.createElement("line", {
+				key: 1,
+				strokeOpacity: strokeOpacity,
+				stroke: stroke,
+				strokeWidth: strokeWidth,
+				strokeDasharray: (0, _utils.getStrokeDasharray)(strokeDasharray),
+				x1: x1,
+				y1: y,
+				x2: x2,
+				y2: y
+			});
+
+			var textRect = _react2.default.createElement("rect", {
+				key: 3,
+				x: rect.x,
+				y: rect.y,
+				height: rect.height,
+				width: textWidth,
+				fill: bgFill,
+				opacity: bgOpacity,
+				strokeWidth: strokeWidth,
+				stroke: stroke,
+				strokeOpacity: strokeOpacity
+			});
+			return [line, textRect];
 		}
 	}, {
 		key: "render",
 		value: function render() {
 			var interactiveCursorClass = this.props.interactiveCursorClass;
-			var _props3 = this.props,
-			    onHover = _props3.onHover,
-			    onUnHover = _props3.onUnHover;
-			var _props4 = this.props,
-			    onDragStart = _props4.onDragStart,
-			    onDrag = _props4.onDrag,
-			    onDragComplete = _props4.onDragComplete;
+			var _props5 = this.props,
+			    onHover = _props5.onHover,
+			    onUnHover = _props5.onUnHover;
+			var _props6 = this.props,
+			    onDragStart = _props6.onDragStart,
+			    onDrag = _props6.onDrag,
+			    onDragComplete = _props6.onDragComplete;
 
 
 			return _react2.default.createElement(_GenericChartComponent2.default, {
@@ -202,20 +260,27 @@ var InteractiveYCoordinate = function (_Component) {
 
 function helper(props, moreProps) {
 	var yValue = props.yValue,
-	    textBox = props.textBox;
+	    textBox = props.textBox,
+	    at = props.at;
 	var _moreProps$chartConfi = moreProps.chartConfig,
 	    width = _moreProps$chartConfi.width,
 	    yScale = _moreProps$chartConfi.yScale,
 	    height = _moreProps$chartConfi.height;
 
+	var _yScale$domain = yScale.domain(),
+	    _yScale$domain2 = _slicedToArray(_yScale$domain, 2),
+	    lowerYValue = _yScale$domain2[0],
+	    upperYValue = _yScale$domain2[1];
 
 	var y = Math.round(yScale(yValue));
+	// const coordinate = yScale.invert(y);
 
 	if (y >= 0 && y <= height) {
 		var rect = {
-			x: textBox.left,
+			x: at === 'left' ? textBox.left : width - textBox.width - textBox.left,
 			y: y - textBox.height / 2,
-			height: textBox.height
+			height: textBox.height,
+			width: textBox.padding.left + textBox.padding.right + textBox.closeIcon.width + textBox.closeIcon.padding.left + textBox.closeIcon.padding.right
 		};
 		return {
 			x1: 0,
@@ -227,6 +292,7 @@ function helper(props, moreProps) {
 }
 
 InteractiveYCoordinate.propTypes = {
+	at: _propTypes2.default.oneOf(["left", "right"]),
 	bgFill: _propTypes2.default.string.isRequired,
 	bgOpacity: _propTypes2.default.number.isRequired,
 
@@ -261,6 +327,7 @@ InteractiveYCoordinate.propTypes = {
 };
 
 InteractiveYCoordinate.defaultProps = {
+	at: 'right',
 	onDragStart: _utils.noop,
 	onDrag: _utils.noop,
 	onDragComplete: _utils.noop,

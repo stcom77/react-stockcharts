@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
-import { isDefined, noop, hexToRGBA, getStrokeDasharrayCanvas } from "../../utils";
+import { isDefined, noop, hexToRGBA, getStrokeDasharrayCanvas, getStrokeDasharray } from "../../utils";
 import { drawOnCanvas } from "../../coordinates/EdgeCoordinateV3";
 import { getYCoordinate } from "../../coordinates/MouseCoordinateY";
 
@@ -121,7 +121,76 @@ class InteractiveYCoordinate extends Component {
 		drawOnCanvas(ctx, yCoord);
 	}
 	renderSVG() {
-		throw new Error("svg not implemented");
+    const {
+      bgFill,
+      bgOpacity,
+
+      textFill,
+      fontFamily,
+      fontSize,
+
+      fontStyle,
+      fontWeight,
+      stroke,
+      strokeWidth,
+      strokeOpacity,
+      strokeDasharray,
+      text,
+      textBox,
+      edge,
+      rectWidth,
+      rectHeight,
+      textAnchor
+    } = this.props;
+
+    const { selected, hovering } = this.props;
+
+    const values = helper(this.props, moreProps);
+    if (values == null) return;
+
+    const { x1, x2, y, rect } = values;
+
+    const textWidth = textBox.padding.left
+      + 30
+      + textBox.padding.right
+      + textBox.closeIcon.padding.left
+      + textBox.closeIcon.width
+      + textBox.closeIcon.padding.right;
+
+    const line = (
+      <line
+        key={1}
+        strokeOpacity={strokeOpacity}
+        stroke={stroke}
+        strokeWidth={strokeWidth}
+        strokeDasharray={getStrokeDasharray(strokeDasharray)}
+        x1={x1}
+        y1={y}
+        x2={x2}
+        y2={y}
+      />
+    );
+
+    const textRect = (
+      <rect
+        key={3}
+        x={rect.x}
+        y={rect.y}
+        height={rect.height}
+        width={textWidth}
+        fill={bgFill}
+        opacity={bgOpacity}
+        strokeWidth={strokeWidth}
+        stroke={stroke}
+        strokeOpacity={strokeOpacity}
+      />
+    );
+    return (
+      [
+        line,
+        textRect
+      ]
+    );
 	}
 	render() {
 		const { interactiveCursorClass } = this.props;
@@ -155,29 +224,33 @@ class InteractiveYCoordinate extends Component {
 }
 
 function helper(props, moreProps) {
-	const { yValue, textBox } = props;
+  const { yValue, textBox, at } = props;
 
-	const { chartConfig: { width, yScale, height } } = moreProps;
+  const { chartConfig: { width, yScale, height } } = moreProps;
+  const [lowerYValue, upperYValue] = yScale.domain();
 
-	const y = Math.round(yScale(yValue));
+  const y = Math.round(yScale(yValue));
+  // const coordinate = yScale.invert(y);
 
-	if (y >= 0 && y <= height) {
-		const rect = {
-			x: textBox.left,
-			y: y - textBox.height / 2,
-			height: textBox.height,
-		};
-		return {
-			x1: 0,
-			x2: width,
-			y,
-			rect,
-		};
-	}
+  if (y >= 0 && y <= height) {
+    const rect = {
+      x: (at === 'left' ? textBox.left : width - textBox.width - textBox.left),
+      y: y - (textBox.height / 2),
+      height: textBox.height,
+      width: textBox.padding.left + textBox.padding.right + textBox.closeIcon.width + textBox.closeIcon.padding.left + textBox.closeIcon.padding.right
+    };
+    return {
+      x1: 0,
+      x2: width,
+      y,
+      rect,
+    };
+  }
 
 }
 
 InteractiveYCoordinate.propTypes = {
+  at: PropTypes.oneOf(["left", "right"]),
 	bgFill: PropTypes.string.isRequired,
 	bgOpacity: PropTypes.number.isRequired,
 
@@ -215,6 +288,7 @@ InteractiveYCoordinate.propTypes = {
 };
 
 InteractiveYCoordinate.defaultProps = {
+  at: 'right',
 	onDragStart: noop,
 	onDrag: noop,
 	onDragComplete: noop,

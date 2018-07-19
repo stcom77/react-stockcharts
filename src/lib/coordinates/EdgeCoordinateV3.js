@@ -1,7 +1,7 @@
 import React from "react";
 
 import { hexToRGBA, isDefined, getStrokeDasharray } from "../utils";
-import TimeIndicator from './TimeIndicator';
+import TimeIndicator from "./TimeIndicator";
 
 /* eslint-disable react/prop-types */
 export function renderSVG(props) {
@@ -44,7 +44,7 @@ export function renderSVG(props) {
 					key={1}
 					transform={`translate(${edge.coordinateBase.edgeXRect},${
 						edge.coordinateBase.edgeYRect
-						})`}
+					})`}
 				>
 					<path
 						d={path}

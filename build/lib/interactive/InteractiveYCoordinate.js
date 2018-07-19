@@ -170,6 +170,7 @@ InteractiveYCoordinate.propTypes = {
 		textBox: _propTypes2.default.shape({
 			height: _propTypes2.default.number.isRequired,
 			left: _propTypes2.default.number.isRequired,
+			width: _propTypes2.default.number.isRequired,
 			padding: _propTypes2.default.shape({
 				left: _propTypes2.default.number.isRequired,
 				right: _propTypes2.default.number.isRequired
@@ -221,6 +222,7 @@ InteractiveYCoordinate.defaultProps = {
 		textBox: {
 			height: 24,
 			left: 20,
+			width: 50,
 			padding: { left: 10, right: 5 },
 			closeIcon: {
 				padding: { left: 5, right: 8 },

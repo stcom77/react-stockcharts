@@ -76,6 +76,7 @@ class EachInteractiveYCoordinate extends Component {
 	}
 	render() {
 		const {
+			at,
 			yValue,
 			bgFill,
 			bgOpacity,
@@ -94,6 +95,8 @@ class EachInteractiveYCoordinate extends Component {
 			strokeWidth,
 			edge,
 			textBox,
+      rectWidth,
+      rectHeight
 		} = this.props;
 		const { hover, closeIconHover } = this.state;
 
@@ -132,6 +135,9 @@ class EachInteractiveYCoordinate extends Component {
 					text={text}
 					textBox={textBox}
 					edge={edge}
+          rectWidth={rectWidth}
+          rectHeight={rectHeight}
+          at={at}
 				/>
 				<ClickableShape
 					show
@@ -162,6 +168,7 @@ class EachInteractiveYCoordinate extends Component {
 
 EachInteractiveYCoordinate.propTypes = {
 	index: PropTypes.number,
+  at: PropTypes.oneOf(["left", "right"]),
 
 	yValue: PropTypes.number.isRequired,
 	bgFill: PropTypes.string.isRequired,
@@ -186,9 +193,13 @@ EachInteractiveYCoordinate.propTypes = {
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
 	onDelete: PropTypes.func.isRequired,
+  rectWidth: PropTypes.number,
+  rectHeight: PropTypes.number,
 };
 
 EachInteractiveYCoordinate.defaultProps = {
+  at: 'left',
+
 	onDrag: noop,
 	onDragComplete: noop,
 
@@ -196,6 +207,8 @@ EachInteractiveYCoordinate.defaultProps = {
 	opacity: 1,
 	selected: false,
 	fill: "#FFFFFF",
+  rectWidth: 50,
+  rectHeight: 20,
 };
 
 export default EachInteractiveYCoordinate;

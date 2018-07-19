@@ -14,7 +14,7 @@ import { drawOnCanvas as _drawOnCanvas, renderSVG as _renderSVG } from "./EdgeCo
 
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
-import { functor, getStrokeDasharray, hexToRGBA, isDefined, strokeDashTypes } from "../utils";
+import { functor, strokeDashTypes } from "../utils";
 
 var AlertCoordinate = function (_Component) {
 	_inherits(AlertCoordinate, _Component);

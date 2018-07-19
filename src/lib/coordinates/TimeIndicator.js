@@ -1,7 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
 
 const TimeIndicator = ({ width, height, fill, x, y }) => {
+	if (!width || !height) {
+		return null;
+	}
+
 	return (
 		<g>
 			<rect
@@ -20,8 +23,6 @@ const TimeIndicator = ({ width, height, fill, x, y }) => {
 		</g>
 	);
 };
-
-TimeIndicator.propTypes = {};
 
 export default TimeIndicator;
 

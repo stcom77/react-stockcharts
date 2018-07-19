@@ -3,7 +3,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 import React from "react";
 
 import { hexToRGBA, isDefined, getStrokeDasharray } from "../utils";
-import TimeIndicator from './TimeIndicator';
+import TimeIndicator from "./TimeIndicator";
 
 /* eslint-disable react/prop-types */
 export function renderSVG(props) {
