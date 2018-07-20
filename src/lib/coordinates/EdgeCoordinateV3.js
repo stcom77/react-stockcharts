@@ -148,7 +148,7 @@ function helper(props) {
 				dx +
 				(orient === "right"
 					? edgeAt + rectWidth / 2 + 10
-					: edgeAt - rectWidth / 2 - 10);
+					: edgeAt - rectWidth / 2);
 			edgeYText = y1;
 		} else {
 			const dy = orient === "bottom" ? strokeWidth - 1 : -strokeWidth + 1;

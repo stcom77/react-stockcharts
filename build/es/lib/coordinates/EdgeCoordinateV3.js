@@ -152,7 +152,7 @@ function helper(props) {
 		if (type === "horizontal") {
 			edgeXRect = dx + (orient === "right" ? edgeAt + 1 : edgeAt - rectWidth - 1);
 			edgeYRect = y1 - rectHeight / 2 - strokeWidth;
-			edgeXText = dx + (orient === "right" ? edgeAt + rectWidth / 2 + 10 : edgeAt - rectWidth / 2 - 10);
+			edgeXText = dx + (orient === "right" ? edgeAt + rectWidth / 2 + 10 : edgeAt - rectWidth / 2);
 			edgeYText = y1;
 		} else {
 			var dy = orient === "bottom" ? strokeWidth - 1 : -strokeWidth + 1;
