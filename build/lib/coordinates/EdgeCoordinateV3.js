@@ -23,7 +23,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /* eslint-disable react/prop-types */
 function renderSVG(props) {
-	var className = props.className;
+	var className = props.className,
+	    minutes = props.minutes;
 
 
 	var edge = helper(props);
@@ -106,7 +107,8 @@ function renderSVG(props) {
 			height: tickerHeight,
 			fill: edge.coordinateBase.fill,
 			x: edge.coordinate.edgeXText - rectWidth / 2,
-			y: edge.coordinate.edgeYText + rectHeight / 2
+			y: edge.coordinate.edgeYText + rectHeight / 2,
+			minutes: minutes
 		});
 	}
 	return _react2.default.createElement(

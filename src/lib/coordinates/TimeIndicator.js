@@ -1,6 +1,6 @@
 import React from "react";
 
-const TimeIndicator = ({ width, height, fill, x, y }) => {
+const TimeIndicator = ({ width, height, fill, x, y, minutes = 5 }) => {
 	if (!width || !height) {
 		return null;
 	}
@@ -18,7 +18,7 @@ const TimeIndicator = ({ width, height, fill, x, y }) => {
 				dy=".32em"
 				fill="white"
 			>
-				{calcTimeToEnd(5)}
+				{calcTimeToEnd(minutes)}
 			</text>
 		</g>
 	);

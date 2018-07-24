@@ -97,7 +97,8 @@ EdgeIndicator.propTypes = {
 	tickerWidth: _propTypes2.default.number,
 	tickerHeight: _propTypes2.default.number,
 	arrowWidth: _propTypes2.default.number,
-	lineStrokeDasharray: _propTypes2.default.oneOf(_utils.strokeDashTypes)
+	lineStrokeDasharray: _propTypes2.default.oneOf(_utils.strokeDashTypes),
+	minutes: _propTypes2.default.number
 };
 
 EdgeIndicator.defaultProps = {
@@ -126,7 +127,8 @@ EdgeIndicator.defaultProps = {
 	strokeWidth: 3,
 	lineStroke: "#000000",
 	lineOpacity: 0.3,
-	lineStrokeDasharray: "ShortDash"
+	lineStrokeDasharray: "ShortDash",
+	minutes: 5
 };
 
 function helper(props, moreProps) {

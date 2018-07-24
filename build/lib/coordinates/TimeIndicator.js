@@ -15,7 +15,9 @@ var TimeIndicator = function TimeIndicator(_ref) {
 	    height = _ref.height,
 	    fill = _ref.fill,
 	    x = _ref.x,
-	    y = _ref.y;
+	    y = _ref.y,
+	    _ref$minutes = _ref.minutes,
+	    minutes = _ref$minutes === undefined ? 5 : _ref$minutes;
 
 	if (!width || !height) {
 		return null;
@@ -35,7 +37,7 @@ var TimeIndicator = function TimeIndicator(_ref) {
 				dy: ".32em",
 				fill: "white"
 			},
-			calcTimeToEnd(5)
+			calcTimeToEnd(minutes)
 		)
 	);
 };

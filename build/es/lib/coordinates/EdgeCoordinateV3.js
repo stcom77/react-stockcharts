@@ -7,7 +7,8 @@ import TimeIndicator from "./TimeIndicator";
 
 /* eslint-disable react/prop-types */
 export function renderSVG(props) {
-	var className = props.className;
+	var className = props.className,
+	    minutes = props.minutes;
 
 
 	var edge = helper(props);
@@ -90,7 +91,8 @@ export function renderSVG(props) {
 			height: tickerHeight,
 			fill: edge.coordinateBase.fill,
 			x: edge.coordinate.edgeXText - rectWidth / 2,
-			y: edge.coordinate.edgeYText + rectHeight / 2
+			y: edge.coordinate.edgeYText + rectHeight / 2,
+			minutes: minutes
 		});
 	}
 	return React.createElement(

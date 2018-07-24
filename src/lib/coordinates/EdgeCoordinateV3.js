@@ -5,7 +5,7 @@ import TimeIndicator from "./TimeIndicator";
 
 /* eslint-disable react/prop-types */
 export function renderSVG(props) {
-	const { className } = props;
+	const { className, minutes } = props;
 
 	const edge = helper(props);
 	if (edge === null) return null;
@@ -93,6 +93,7 @@ export function renderSVG(props) {
 				fill={edge.coordinateBase.fill}
 				x={edge.coordinate.edgeXText - rectWidth / 2}
 				y={edge.coordinate.edgeYText + rectHeight / 2}
+				minutes={minutes}
 			/>
 		);
 	}
