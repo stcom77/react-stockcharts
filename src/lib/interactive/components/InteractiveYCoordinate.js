@@ -8,119 +8,122 @@ import { drawOnCanvas } from "../../coordinates/EdgeCoordinateV3";
 import { getYCoordinate } from "../../coordinates/MouseCoordinateY";
 
 class InteractiveYCoordinate extends Component {
-	constructor(props) {
-		super(props);
+  constructor(props) {
+    super(props);
 
-		this.renderSVG = this.renderSVG.bind(this);
-		this.drawOnCanvas = this.drawOnCanvas.bind(this);
-		this.isHover = this.isHover.bind(this);
-	}
-	isHover(moreProps) {
-		const { onHover } = this.props;
+    this.renderSVG = this.renderSVG.bind(this);
+    this.drawOnCanvas = this.drawOnCanvas.bind(this);
+    this.isHover = this.isHover.bind(this);
+  }
 
-		if (isDefined(onHover)) {
-			const values = helper(this.props, moreProps);
-			if (values == null) return false;
+  isHover(moreProps) {
+    const { onHover } = this.props;
 
-			const { x1, x2, y, rect } = values;
-			const { mouseXY: [mouseX, mouseY] } = moreProps;
+    if (isDefined(onHover)) {
+      const values = helper(this.props, moreProps);
+      if (values == null) return false;
 
-			if (
-				mouseX >= rect.x
-				&& mouseX <= rect.x + this.width
-				&& mouseY >= rect.y
-				&& mouseY <= rect.y + rect.height
-			) {
-				return true;
-			}
-			if (
-				x1 <= mouseX
-				&& x2 >= mouseX
-				&& Math.abs(mouseY - y) < 4
-			) {
-				return true;
-			}
-		}
-		return false;
-	}
-	drawOnCanvas(ctx, moreProps) {
-		const {
-			bgFill,
-			bgOpacity,
+      const { x1, x2, y, rect } = values;
+      const { mouseXY: [mouseX, mouseY] } = moreProps;
 
-			textFill,
-			fontFamily,
-			fontSize,
+      if (
+        mouseX >= rect.x
+        && mouseX <= rect.x + this.width
+        && mouseY >= rect.y
+        && mouseY <= rect.y + rect.height
+      ) {
+        return true;
+      }
+      if (
+        x1 <= mouseX
+        && x2 >= mouseX
+        && Math.abs(mouseY - y) < 4
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-			fontStyle,
-			fontWeight,
-			stroke,
-			strokeWidth,
-			strokeOpacity,
-			strokeDasharray,
-			text,
-			textBox,
-			edge,
-		} = this.props;
+  drawOnCanvas(ctx, moreProps) {
+    const {
+      bgFill,
+      bgOpacity,
 
-		const { selected, hovering } = this.props;
+      textFill,
+      fontFamily,
+      fontSize,
 
-		const values = helper(this.props, moreProps);
-		if (values == null) return;
+      fontStyle,
+      fontWeight,
+      stroke,
+      strokeWidth,
+      strokeOpacity,
+      strokeDasharray,
+      text,
+      textBox,
+      edge,
+    } = this.props;
 
-		const { x1, x2, y, rect } = values;
+    const { selected, hovering } = this.props;
 
-		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
+    const values = helper(this.props, moreProps);
+    if (values == null) return;
 
-		ctx.beginPath();
-		if (selected || hovering) {
-			ctx.lineWidth = strokeWidth + 1;
-		} else {
-			ctx.lineWidth = strokeWidth;
-		}
-		ctx.textBaseline = "middle";
-		ctx.textAlign = "start";
-		ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
+    const { x1, x2, y, rect } = values;
 
-		this.width = textBox.padding.left
-			+ ctx.measureText(text).width
-			+ textBox.padding.right
-			+ textBox.closeIcon.padding.left
-			+ textBox.closeIcon.width
-			+ textBox.closeIcon.padding.right;
+    ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
 
-		ctx.setLineDash(getStrokeDasharrayCanvas(strokeDasharray));
-		ctx.moveTo(x1, y);
-		ctx.lineTo(rect.x, y);
+    ctx.beginPath();
+    if (selected || hovering) {
+      ctx.lineWidth = strokeWidth + 1;
+    } else {
+      ctx.lineWidth = strokeWidth;
+    }
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "start";
+    ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
 
-		ctx.moveTo(rect.x + this.width, y);
-		ctx.lineTo(x2, y);
-		ctx.stroke();
+    this.width = textBox.padding.left
+      + ctx.measureText(text).width
+      + textBox.padding.right
+      + textBox.closeIcon.padding.left
+      + textBox.closeIcon.width
+      + textBox.closeIcon.padding.right;
 
-		ctx.setLineDash([]);
+    ctx.setLineDash(getStrokeDasharrayCanvas(strokeDasharray));
+    ctx.moveTo(x1, y);
+    ctx.lineTo(rect.x, y);
+
+    ctx.moveTo(rect.x + this.width, y);
+    ctx.lineTo(x2, y);
+    ctx.stroke();
+
+    ctx.setLineDash([]);
 
 
-		ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
+    ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
 
-		ctx.fillRect(rect.x, rect.y, this.width, rect.height);
-		ctx.strokeRect(rect.x, rect.y, this.width, rect.height);
+    ctx.fillRect(rect.x, rect.y, this.width, rect.height);
+    ctx.strokeRect(rect.x, rect.y, this.width, rect.height);
 
-		ctx.fillStyle = textFill;
+    ctx.fillStyle = textFill;
 
-		ctx.beginPath();
-		ctx.fillText(text, rect.x + 10, y);
-		const newEdge = {
-			...edge,
-			textFill,
-			fontFamily,
-			fontSize,
-			opacity: bgOpacity
-		};
-		const yValue = edge.displayFormat(this.props.yValue);
-		const yCoord = getYCoordinate(y, yValue, newEdge, moreProps);
-		drawOnCanvas(ctx, yCoord);
-	}
-	renderSVG() {
+    ctx.beginPath();
+    ctx.fillText(text, rect.x + 10, y);
+    const newEdge = {
+      ...edge,
+      textFill,
+      fontFamily,
+      fontSize,
+      opacity: bgOpacity
+    };
+    const yValue = edge.displayFormat(this.props.yValue);
+    const yCoord = getYCoordinate(y, yValue, newEdge, moreProps);
+    drawOnCanvas(ctx, yCoord);
+  }
+
+  renderSVG(moreProps) {
     const {
       bgFill,
       bgOpacity,
@@ -140,7 +143,8 @@ class InteractiveYCoordinate extends Component {
       edge,
       rectWidth,
       rectHeight,
-      textAnchor
+      textAnchor,
+      textWidth: textWidthProp
     } = this.props;
 
     const { selected, hovering } = this.props;
@@ -151,7 +155,7 @@ class InteractiveYCoordinate extends Component {
     const { x1, x2, y, rect } = values;
 
     const textWidth = textBox.padding.left
-      + 30
+      + textWidthProp
       + textBox.padding.right
       + textBox.closeIcon.padding.left
       + textBox.closeIcon.width
@@ -191,41 +195,41 @@ class InteractiveYCoordinate extends Component {
         textRect
       ]
     );
-	}
-	render() {
-		const { interactiveCursorClass } = this.props;
-		const { onHover, onUnHover } = this.props;
-		const { onDragStart, onDrag, onDragComplete } = this.props;
+  }
 
-		return (
-			<GenericChartComponent
-				clip={false}
-				xxxyyy
-				isHover={this.isHover}
+  render() {
+    const { interactiveCursorClass } = this.props;
+    const { onHover, onUnHover } = this.props;
+    const { onDragStart, onDrag, onDragComplete } = this.props;
 
-				svgDraw={this.renderSVG}
-				canvasToDraw={getMouseCanvas}
-				canvasDraw={this.drawOnCanvas}
+    return (
+      <GenericChartComponent
+        clip={false}
+        xxxyyy
+        isHover={this.isHover}
 
-				interactiveCursorClass={interactiveCursorClass}
-				/* selected={selected} */
-				enableDragOnHover
+        svgDraw={this.renderSVG}
+        canvasToDraw={getMouseCanvas}
+        canvasDraw={this.drawOnCanvas}
 
-				onDragStart={onDragStart}
-				onDrag={onDrag}
-				onDragComplete={onDragComplete}
-				onHover={onHover}
-				onUnHover={onUnHover}
+        interactiveCursorClass={interactiveCursorClass}
+        /* selected={selected} */
+        enableDragOnHover
 
-				drawOn={["mousemove", "mouseleave", "pan", "drag"]}
-			/>
-		);
-	}
+        onDragStart={onDragStart}
+        onDrag={onDrag}
+        onDragComplete={onDragComplete}
+        onHover={onHover}
+        onUnHover={onUnHover}
+
+        drawOn={["mousemove", "mouseleave", "pan", "drag"]}
+      />
+    );
+  }
 }
 
 function helper(props, moreProps) {
   const { yValue, textBox, at } = props;
-
   const { chartConfig: { width, yScale, height } } = moreProps;
   const [lowerYValue, upperYValue] = yScale.domain();
 
@@ -239,6 +243,7 @@ function helper(props, moreProps) {
       height: textBox.height,
       width: textBox.padding.left + textBox.padding.right + textBox.closeIcon.width + textBox.closeIcon.padding.left + textBox.closeIcon.padding.right
     };
+
     return {
       x1: 0,
       x2: width,
@@ -251,54 +256,54 @@ function helper(props, moreProps) {
 
 InteractiveYCoordinate.propTypes = {
   at: PropTypes.oneOf(["left", "right"]),
-	bgFill: PropTypes.string.isRequired,
-	bgOpacity: PropTypes.number.isRequired,
+  bgFill: PropTypes.string.isRequired,
+  bgOpacity: PropTypes.number.isRequired,
 
-	stroke: PropTypes.string.isRequired,
-	strokeWidth: PropTypes.number.isRequired,
-	strokeOpacity: PropTypes.number.isRequired,
-	strokeDasharray: PropTypes.string.isRequired,
+  stroke: PropTypes.string.isRequired,
+  strokeWidth: PropTypes.number.isRequired,
+  strokeOpacity: PropTypes.number.isRequired,
+  strokeDasharray: PropTypes.string.isRequired,
 
-	textFill: PropTypes.string.isRequired,
-	fontFamily: PropTypes.string.isRequired,
-	fontSize: PropTypes.number.isRequired,
-	fontWeight: PropTypes.oneOfType([
-		PropTypes.number,
-		PropTypes.string,
-	]).isRequired,
-	fontStyle: PropTypes.string.isRequired,
+  textFill: PropTypes.string.isRequired,
+  fontFamily: PropTypes.string.isRequired,
+  fontSize: PropTypes.number.isRequired,
+  fontWeight: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]).isRequired,
+  fontStyle: PropTypes.string.isRequired,
 
-	text: PropTypes.string.isRequired,
-	edge: PropTypes.object.isRequired,
-	textBox: PropTypes.object.isRequired,
-	yValue: PropTypes.number.isRequired,
+  text: PropTypes.string.isRequired,
+  edge: PropTypes.object.isRequired,
+  textBox: PropTypes.object.isRequired,
+  yValue: PropTypes.number.isRequired,
 
-	onDragStart: PropTypes.func.isRequired,
-	onDrag: PropTypes.func.isRequired,
-	onDragComplete: PropTypes.func.isRequired,
-	onHover: PropTypes.func,
-	onUnHover: PropTypes.func,
+  onDragStart: PropTypes.func.isRequired,
+  onDrag: PropTypes.func.isRequired,
+  onDragComplete: PropTypes.func.isRequired,
+  onHover: PropTypes.func,
+  onUnHover: PropTypes.func,
 
-	defaultClassName: PropTypes.string,
-	interactiveCursorClass: PropTypes.string,
+  defaultClassName: PropTypes.string,
+  interactiveCursorClass: PropTypes.string,
 
-	tolerance: PropTypes.number.isRequired,
-	selected: PropTypes.bool.isRequired,
-	hovering: PropTypes.bool.isRequired,
+  tolerance: PropTypes.number.isRequired,
+  selected: PropTypes.bool.isRequired,
+  hovering: PropTypes.bool.isRequired,
 };
 
 InteractiveYCoordinate.defaultProps = {
   at: 'right',
-	onDragStart: noop,
-	onDrag: noop,
-	onDragComplete: noop,
+  onDragStart: noop,
+  onDrag: noop,
+  onDragComplete: noop,
 
-	fontWeight: "normal", // standard dev
+  fontWeight: "normal", // standard dev
 
-	strokeWidth: 1,
-	tolerance: 4,
-	selected: false,
-	hovering: false,
+  strokeWidth: 1,
+  tolerance: 4,
+  selected: false,
+  hovering: false,
 };
 
 export default InteractiveYCoordinate;

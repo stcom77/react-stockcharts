@@ -19,226 +19,229 @@ import EachInteractiveYCoordinate from "./wrapper/EachInteractiveYCoordinate";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
 
 var InteractiveYCoordinate = function (_Component) {
-	_inherits(InteractiveYCoordinate, _Component);
+  _inherits(InteractiveYCoordinate, _Component);
 
-	function InteractiveYCoordinate(props) {
-		_classCallCheck(this, InteractiveYCoordinate);
+  function InteractiveYCoordinate(props) {
+    _classCallCheck(this, InteractiveYCoordinate);
 
-		var _this = _possibleConstructorReturn(this, (InteractiveYCoordinate.__proto__ || Object.getPrototypeOf(InteractiveYCoordinate)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (InteractiveYCoordinate.__proto__ || Object.getPrototypeOf(InteractiveYCoordinate)).call(this, props));
 
-		_this.handleDrag = _this.handleDrag.bind(_this);
-		_this.handleDragComplete = _this.handleDragComplete.bind(_this);
-		_this.terminate = terminate.bind(_this);
+    _this.handleDrag = _this.handleDrag.bind(_this);
+    _this.handleDragComplete = _this.handleDragComplete.bind(_this);
+    _this.terminate = terminate.bind(_this);
 
-		_this.saveNodeType = saveNodeType.bind(_this);
-		_this.getSelectionState = isHoverForInteractiveType("yCoordinateList").bind(_this);
+    _this.saveNodeType = saveNodeType.bind(_this);
+    _this.getSelectionState = isHoverForInteractiveType("yCoordinateList").bind(_this);
 
-		_this.nodes = [];
-		_this.state = {};
-		return _this;
-	}
+    _this.nodes = [];
+    _this.state = {};
+    return _this;
+  }
 
-	_createClass(InteractiveYCoordinate, [{
-		key: "handleDrag",
-		value: function handleDrag(index, yValue) {
-			this.setState({
-				override: {
-					index: index,
-					yValue: yValue
-				}
-			});
-		}
-	}, {
-		key: "handleDragComplete",
-		value: function handleDragComplete(moreProps) {
-			var _this2 = this;
+  _createClass(InteractiveYCoordinate, [{
+    key: "handleDrag",
+    value: function handleDrag(index, yValue) {
+      this.setState({
+        override: {
+          index: index,
+          yValue: yValue
+        }
+      });
+    }
+  }, {
+    key: "handleDragComplete",
+    value: function handleDragComplete(moreProps) {
+      var _this2 = this;
 
-			var override = this.state.override;
+      var override = this.state.override;
 
-			if (isDefined(override)) {
-				var yCoordinateList = this.props.yCoordinateList;
+      if (isDefined(override)) {
+        var yCoordinateList = this.props.yCoordinateList;
 
-				var newAlertList = yCoordinateList.map(function (each, idx) {
-					var selected = idx === override.index;
-					return selected ? _extends({}, each, {
-						yValue: override.yValue,
-						selected: selected
-					}) : _extends({}, each, {
-						selected: selected
-					});
-				});
-				var draggedAlert = newAlertList[override.index];
-				this.setState({
-					override: null
-				}, function () {
-					_this2.props.onDragComplete(newAlertList, moreProps, draggedAlert);
-				});
-			}
-		}
-	}, {
-		key: "handleDrawLine",
-		value: function handleDrawLine(xyValue) {
-			var current = this.state.current;
+        var newAlertList = yCoordinateList.map(function (each, idx) {
+          var selected = idx === override.index;
+          return selected ? _extends({}, each, {
+            yValue: override.yValue,
+            selected: selected
+          }) : _extends({}, each, {
+            selected: selected
+          });
+        });
+        var draggedAlert = newAlertList[override.index];
+        this.setState({
+          override: null
+        }, function () {
+          _this2.props.onDragComplete(newAlertList, moreProps, draggedAlert);
+        });
+      }
+    }
+  }, {
+    key: "handleDrawLine",
+    value: function handleDrawLine(xyValue) {
+      var current = this.state.current;
 
 
-			if (isDefined(current) && isDefined(current.start)) {
-				this.setState({
-					current: {
-						start: current.start,
-						end: xyValue
-					}
-				});
-			}
-		}
-	}, {
-		key: "render",
-		value: function render() {
-			var _this3 = this;
+      if (isDefined(current) && isDefined(current.start)) {
+        this.setState({
+          current: {
+            start: current.start,
+            end: xyValue
+          }
+        });
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this3 = this;
 
-			var _props = this.props,
-			    yCoordinateList = _props.yCoordinateList,
-			    onDelete = _props.onDelete;
-			var override = this.state.override;
+      var _props = this.props,
+          yCoordinateList = _props.yCoordinateList,
+          onDelete = _props.onDelete;
+      var override = this.state.override;
 
-			return React.createElement(
-				"g",
-				null,
-				yCoordinateList.map(function (each, idx) {
-					var props = each;
-					return React.createElement(EachInteractiveYCoordinate, _extends({ key: idx,
-						ref: _this3.saveNodeType(idx),
-						index: idx
-					}, props, {
-						selected: each.selected,
-						yValue: getValueFromOverride(override, idx, "yValue", each.yValue),
 
-						onDelete: onDelete,
-						onDrag: _this3.handleDrag,
-						onDragComplete: _this3.handleDragComplete,
-						edgeInteractiveCursor: "react-stockcharts-move-cursor"
-					}));
-				})
-			);
-		}
-	}]);
+      return React.createElement(
+        "g",
+        null,
+        yCoordinateList.map(function (each, idx) {
+          var props = each;
+          return React.createElement(EachInteractiveYCoordinate, _extends({
+            key: idx,
+            ref: _this3.saveNodeType(idx),
+            index: idx
+          }, props, {
+            selected: each.selected,
+            yValue: getValueFromOverride(override, idx, "yValue", each.yValue),
+            onDelete: onDelete,
+            onDrag: _this3.handleDrag,
+            onDragComplete: _this3.handleDragComplete,
+            edgeInteractiveCursor: "react-stockcharts-move-cursor"
+          }));
+        })
+      );
+    }
+  }]);
 
-	return InteractiveYCoordinate;
+  return InteractiveYCoordinate;
 }(Component);
 
 InteractiveYCoordinate.propTypes = {
-	onChoosePosition: PropTypes.func.isRequired,
-	onDragComplete: PropTypes.func.isRequired,
-	onSelect: PropTypes.func,
-	onDelete: PropTypes.func,
+  onChoosePosition: PropTypes.func.isRequired,
+  onDragComplete: PropTypes.func.isRequired,
+  onSelect: PropTypes.func,
+  onDelete: PropTypes.func,
 
-	defaultPriceCoordinate: PropTypes.shape({
-		bgFill: PropTypes.string.isRequired,
-		bgOpacity: PropTypes.number.isRequired,
+  defaultPriceCoordinate: PropTypes.shape({
+    bgFill: PropTypes.string.isRequired,
+    bgOpacity: PropTypes.number.isRequired,
 
-		stroke: PropTypes.string.isRequired,
-		strokeDasharray: PropTypes.oneOf(strokeDashTypes).isRequired,
-		strokeOpacity: PropTypes.number.isRequired,
-		strokeWidth: PropTypes.number.isRequired,
+    stroke: PropTypes.string.isRequired,
+    strokeDasharray: PropTypes.oneOf(strokeDashTypes).isRequired,
+    strokeOpacity: PropTypes.number.isRequired,
+    strokeWidth: PropTypes.number.isRequired,
 
-		textFill: PropTypes.string.isRequired,
-		fontFamily: PropTypes.string.isRequired,
-		fontWeight: PropTypes.string.isRequired,
-		fontStyle: PropTypes.string.isRequired,
-		fontSize: PropTypes.number.isRequired,
-		text: PropTypes.string.isRequired,
+    textFill: PropTypes.string.isRequired,
+    fontFamily: PropTypes.string.isRequired,
+    fontWeight: PropTypes.string.isRequired,
+    fontStyle: PropTypes.string.isRequired,
+    fontSize: PropTypes.number.isRequired,
+    text: PropTypes.string.isRequired,
+    textWidth: PropTypes.number,
+    textBox: PropTypes.shape({
+      height: PropTypes.number.isRequired,
+      left: PropTypes.number.isRequired,
+      width: PropTypes.number.isRequired,
+      padding: PropTypes.shape({
+        left: PropTypes.number.isRequired,
+        right: PropTypes.number.isRequired
+      }),
+      closeIcon: PropTypes.shape({
+        padding: PropTypes.shape({
+          left: PropTypes.number.isRequired,
+          right: PropTypes.number.isRequired
+        }),
+        width: PropTypes.number.isRequired
+      })
+    }).isRequired,
+    edge: PropTypes.shape({
+      stroke: PropTypes.string.isRequired,
+      strokeOpacity: PropTypes.number.isRequired,
+      strokeWidth: PropTypes.number.isRequired,
 
-		textBox: PropTypes.shape({
-			height: PropTypes.number.isRequired,
-			left: PropTypes.number.isRequired,
-			width: PropTypes.number.isRequired,
-			padding: PropTypes.shape({
-				left: PropTypes.number.isRequired,
-				right: PropTypes.number.isRequired
-			}),
-			closeIcon: PropTypes.shape({
-				padding: PropTypes.shape({
-					left: PropTypes.number.isRequired,
-					right: PropTypes.number.isRequired
-				}),
-				width: PropTypes.number.isRequired
-			})
-		}).isRequired,
-		edge: PropTypes.shape({
-			stroke: PropTypes.string.isRequired,
-			strokeOpacity: PropTypes.number.isRequired,
-			strokeWidth: PropTypes.number.isRequired,
+      fill: PropTypes.string.isRequired,
+      fillOpacity: PropTypes.number.isRequired
+    })
+  }).isRequired,
 
-			fill: PropTypes.string.isRequired,
-			fillOpacity: PropTypes.number.isRequired
-		})
-	}).isRequired,
-
-	hoverText: PropTypes.object.isRequired,
-	yCoordinateList: PropTypes.array.isRequired,
-	enabled: PropTypes.bool.isRequired
+  hoverText: PropTypes.object.isRequired,
+  yCoordinateList: PropTypes.array.isRequired,
+  enabled: PropTypes.bool.isRequired
 };
 
 InteractiveYCoordinate.defaultProps = {
-	onChoosePosition: noop,
-	onDragComplete: noop,
-	onSelect: noop,
-	onDelete: noop,
+  onChoosePosition: noop,
+  onDragComplete: noop,
+  onSelect: noop,
+  onDelete: noop,
 
-	defaultPriceCoordinate: {
-		bgFill: "#FFFFFF",
-		bgOpacity: 1,
+  defaultPriceCoordinate: {
+    bgFill: "#FFFFFF",
+    bgOpacity: 1,
 
-		stroke: "#6574CD",
-		strokeOpacity: 1,
-		strokeDasharray: "ShortDash2",
-		strokeWidth: 1,
+    stroke: "#6574CD",
+    strokeOpacity: 1,
+    strokeDasharray: "ShortDash2",
+    strokeWidth: 1,
 
-		textFill: "#6574CD",
-		fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
-		fontSize: 12,
-		fontStyle: "normal",
-		fontWeight: "normal",
-		text: "Alert",
-		textBox: {
-			height: 24,
-			left: 20,
-			width: 50,
-			padding: { left: 10, right: 5 },
-			closeIcon: {
-				padding: { left: 5, right: 8 },
-				width: 8
-			}
-		},
-		edge: {
-			stroke: "#6574CD",
-			strokeOpacity: 1,
-			strokeWidth: 1,
+    textFill: "#6574CD",
+    fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+    fontSize: 12,
+    fontStyle: "normal",
+    fontWeight: "normal",
+    text: "Alert",
+    textWidth: 40,
+    textBox: {
+      height: 24,
+      left: 20,
+      width: 50,
+      padding: { left: 10, right: 5 },
+      closeIcon: {
+        padding: { left: 5, right: 8 },
+        width: 8
+      }
+    },
+    edge: {
+      stroke: "#6574CD",
+      strokeOpacity: 1,
+      strokeWidth: 1,
 
-			fill: "#FFFFFF",
-			fillOpacity: 1,
-			orient: "right",
-			at: "right",
-			arrowWidth: 10,
-			dx: 0,
-			rectWidth: 50,
-			rectHeight: 20,
-			displayFormat: format(".2f")
-		}
-	},
-	hoverText: _extends({}, HoverTextNearMouse.defaultProps, {
-		enable: true,
-		bgHeight: 18,
-		bgWidth: 175,
-		text: "Click and drag the edge circles"
-	}),
-	yCoordinateList: []
+      fill: "#FFFFFF",
+      fillOpacity: 1,
+      orient: "right",
+      at: "right",
+      arrowWidth: 10,
+      dx: 0,
+      rectWidth: 50,
+      rectHeight: 20,
+      displayFormat: format(".2f")
+    }
+  },
+  hoverText: _extends({}, HoverTextNearMouse.defaultProps, {
+    enable: true,
+    bgHeight: 18,
+    bgWidth: 175,
+    text: "Click and drag the edge circles"
+  }),
+  textWidth: 40,
+  yCoordinateList: []
 };
 
 InteractiveYCoordinate.contextTypes = {
-	subscribe: PropTypes.func.isRequired,
-	unsubscribe: PropTypes.func.isRequired,
-	generateSubscriptionId: PropTypes.func.isRequired,
-	chartId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
+  subscribe: PropTypes.func.isRequired,
+  unsubscribe: PropTypes.func.isRequired,
+  generateSubscriptionId: PropTypes.func.isRequired,
+  chartId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
 };
 
 export default InteractiveYCoordinate;

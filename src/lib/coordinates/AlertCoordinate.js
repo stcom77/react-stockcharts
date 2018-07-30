@@ -24,7 +24,7 @@ class AlertCoordinate extends Component {
 	}
 
 	handleMouseOver = (e) => {
-		console.log(e);
+		// console.log(e);
 	}
 
 	render() {

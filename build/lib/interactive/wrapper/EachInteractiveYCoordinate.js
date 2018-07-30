@@ -150,7 +150,8 @@ var EachInteractiveYCoordinate = function (_Component) {
 			    edge = _props3.edge,
 			    textBox = _props3.textBox,
 			    rectWidth = _props3.rectWidth,
-			    rectHeight = _props3.rectHeight;
+			    rectHeight = _props3.rectHeight,
+			    textWidth = _props3.textWidth;
 			var _state = this.state,
 			    hover = _state.hover,
 			    closeIconHover = _state.closeIconHover;
@@ -194,7 +195,8 @@ var EachInteractiveYCoordinate = function (_Component) {
 					edge: edge,
 					rectWidth: rectWidth,
 					rectHeight: rectHeight,
-					at: at
+					at: at,
+					textWidth: textWidth
 				})),
 				_react2.default.createElement(_ClickableShape2.default, {
 					show: true,
@@ -212,7 +214,9 @@ var EachInteractiveYCoordinate = function (_Component) {
 
 					onHover: this.handleCloseIconHover,
 					onUnHover: this.handleCloseIconHover,
-					onClick: this.handleDelete
+					onClick: this.handleDelete,
+					at: at,
+					textWidth: textWidth
 				})
 			);
 		}
@@ -249,7 +253,8 @@ EachInteractiveYCoordinate.propTypes = {
 	onDragComplete: _propTypes2.default.func.isRequired,
 	onDelete: _propTypes2.default.func.isRequired,
 	rectWidth: _propTypes2.default.number,
-	rectHeight: _propTypes2.default.number
+	rectHeight: _propTypes2.default.number,
+	textWidth: _propTypes2.default.number.isRequired
 };
 
 EachInteractiveYCoordinate.defaultProps = {

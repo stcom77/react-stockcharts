@@ -107,7 +107,7 @@ var StandardDeviationChannel = function (_Component) {
 
 			if ((0, _utils.isDefined)(current) && (0, _utils.isDefined)(current.start)) {
 				this.mouseMoved = true;
-				console.log(xyValue);
+				// console.log(xyValue);
 				this.setState({
 					current: {
 						start: current.start,

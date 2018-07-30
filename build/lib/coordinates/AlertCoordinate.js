@@ -43,7 +43,7 @@ var AlertCoordinate = function (_Component) {
 		var _this = _possibleConstructorReturn(this, (AlertCoordinate.__proto__ || Object.getPrototypeOf(AlertCoordinate)).call(this, props));
 
 		_this.handleMouseOver = function (e) {
-			console.log(e);
+			// console.log(e);
 		};
 
 		_this.renderSVG = _this.renderSVG.bind(_this);

@@ -19,203 +19,200 @@ import { hexToRGBA, getStrokeDasharray } from "../../utils";
 import Times from './Times';
 
 var ClickableShape = function (_Component) {
-	_inherits(ClickableShape, _Component);
+  _inherits(ClickableShape, _Component);
 
-	function ClickableShape(props) {
-		_classCallCheck(this, ClickableShape);
+  function ClickableShape(props) {
+    _classCallCheck(this, ClickableShape);
 
-		var _this = _possibleConstructorReturn(this, (ClickableShape.__proto__ || Object.getPrototypeOf(ClickableShape)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (ClickableShape.__proto__ || Object.getPrototypeOf(ClickableShape)).call(this, props));
 
-		_this.saveNode = _this.saveNode.bind(_this);
-		_this.drawOnCanvas = _this.drawOnCanvas.bind(_this);
-		_this.renderSVG = _this.renderSVG.bind(_this);
-		_this.isHover = _this.isHover.bind(_this);
-		return _this;
-	}
+    _this.saveNode = _this.saveNode.bind(_this);
+    _this.drawOnCanvas = _this.drawOnCanvas.bind(_this);
+    _this.renderSVG = _this.renderSVG.bind(_this);
+    _this.isHover = _this.isHover.bind(_this);
+    return _this;
+  }
 
-	_createClass(ClickableShape, [{
-		key: "saveNode",
-		value: function saveNode(node) {
-			this.node = node;
-		}
-	}, {
-		key: "isHover",
-		value: function isHover(moreProps) {
-			var mouseXY = moreProps.mouseXY;
+  _createClass(ClickableShape, [{
+    key: "saveNode",
+    value: function saveNode(node) {
+      this.node = node;
+    }
+  }, {
+    key: "isHover",
+    value: function isHover(moreProps) {
+      var mouseXY = moreProps.mouseXY;
 
-			if (this.closeIcon) {
-				var textBox = this.props.textBox;
-				var _closeIcon = this.closeIcon,
-				    x = _closeIcon.x,
-				    y = _closeIcon.y;
+      if (this.closeIcon) {
+        // const { textBox } = this.props;
+        // const { x, y } = this.closeIcon;
+        // const halfWidth = textBox.closeIcon.width / 2;
+        //
+        // const start1 = [x - halfWidth, y - halfWidth];
+        // const end1 = [x + halfWidth, y + halfWidth];
+        // const start2 = [x - halfWidth, y + halfWidth];
+        // const end2 = [x + halfWidth, y - halfWidth];
+        if (isHovering2([this.closeIcon.x1, this.closeIcon.y1], [this.closeIcon.x2, this.closeIcon.y2], mouseXY, 3)) {
+          return true;
+        }
+      }
+      return false;
+    }
+  }, {
+    key: "drawOnCanvas",
+    value: function drawOnCanvas(ctx, moreProps) {
+      var _props = this.props,
+          stroke = _props.stroke,
+          strokeWidth = _props.strokeWidth,
+          strokeOpacity = _props.strokeOpacity,
+          hovering = _props.hovering,
+          textBox = _props.textBox;
 
-				var halfWidth = textBox.closeIcon.width / 2;
+      var _helper = helper(this.props, moreProps, ctx),
+          _helper2 = _slicedToArray(_helper, 2),
+          x = _helper2[0],
+          y = _helper2[1];
 
-				var start1 = [x - halfWidth, y - halfWidth];
-				var end1 = [x + halfWidth, y + halfWidth];
-				var start2 = [x - halfWidth, y + halfWidth];
-				var end2 = [x + halfWidth, y - halfWidth];
+      this.closeIcon = { x: x, y: y };
+      ctx.beginPath();
 
-				if (isHovering2(start1, end1, mouseXY, 3) || isHovering2(start2, end2, mouseXY, 3)) {
-					return true;
-				}
-			}
-			return false;
-		}
-	}, {
-		key: "drawOnCanvas",
-		value: function drawOnCanvas(ctx, moreProps) {
-			var _props = this.props,
-			    stroke = _props.stroke,
-			    strokeWidth = _props.strokeWidth,
-			    strokeOpacity = _props.strokeOpacity,
-			    hovering = _props.hovering,
-			    textBox = _props.textBox;
+      ctx.lineWidth = hovering ? strokeWidth + 1 : strokeWidth;
+      ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
+      var halfWidth = textBox.closeIcon.width / 2;
+      ctx.moveTo(x - halfWidth, y - halfWidth);
+      ctx.lineTo(x + halfWidth, y + halfWidth);
+      ctx.moveTo(x - halfWidth, y + halfWidth);
+      ctx.lineTo(x + halfWidth, y - halfWidth);
+      ctx.stroke();
+    }
+  }, {
+    key: "renderSVG",
+    value: function renderSVG(moreProps) {
+      var _props2 = this.props,
+          stroke = _props2.stroke,
+          strokeWidth = _props2.strokeWidth,
+          strokeOpacity = _props2.strokeOpacity,
+          fill = _props2.fill,
+          strokeDasharray = _props2.strokeDasharray,
+          text = _props2.text,
+          fontFamily = _props2.fontFamily,
+          fontSize = _props2.fontSize,
+          textAnchor = _props2.textAnchor;
 
-			var _helper = helper(this.props, moreProps, ctx),
-			    _helper2 = _slicedToArray(_helper, 2),
-			    x = _helper2[0],
-			    y = _helper2[1];
+      var _helper3 = helper(this.props, moreProps, {}),
+          _helper4 = _slicedToArray(_helper3, 3),
+          x = _helper4[0],
+          y = _helper4[1],
+          icon = _helper4[2];
 
-			this.closeIcon = { x: x, y: y };
-			ctx.beginPath();
+      this.closeIcon = icon;
+      var line = React.createElement(Times, {
+        stroke: stroke,
+        strokeWidth: strokeWidth,
+        x1: icon.x1,
+        y1: icon.y1,
+        x2: icon.x2,
+        y2: icon.y2
+      });
 
-			ctx.lineWidth = hovering ? strokeWidth + 1 : strokeWidth;
-			ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
-			var halfWidth = textBox.closeIcon.width / 2;
-			ctx.moveTo(x - halfWidth, y - halfWidth);
-			ctx.lineTo(x + halfWidth, y + halfWidth);
-			ctx.moveTo(x - halfWidth, y + halfWidth);
-			ctx.lineTo(x + halfWidth, y - halfWidth);
-			ctx.stroke();
-		}
-	}, {
-		key: "renderSVG",
-		value: function renderSVG(props, moreProps, ctx) {
-			var stroke = props.stroke,
-			    strokeWidth = props.strokeWidth,
-			    strokeOpacity = props.strokeOpacity,
-			    fill = props.fill,
-			    strokeDasharray = props.strokeDasharray,
-			    text = props.text,
-			    fontFamily = props.fontFamily,
-			    fontSize = props.fontSize,
-			    textAnchor = props.textAnchor;
+      var textCoordinate = React.createElement(
+        "text",
+        {
+          key: 2,
+          x: x,
+          y: y,
+          fontFamily: fontFamily,
+          fontSize: fontSize,
+          dy: ".32em",
+          fill: stroke,
+          textAnchor: textAnchor
+        },
+        text
+      );
 
-			var _helper3 = helper(this.props, moreProps, {}),
-			    _helper4 = _slicedToArray(_helper3, 3),
-			    x = _helper4[0],
-			    y = _helper4[1],
-			    icon = _helper4[2];
+      return [textCoordinate, line];
 
-			var line = React.createElement(Times, {
-				stroke: stroke,
-				strokeWidth: strokeWidth,
-				x1: icon.x1,
-				y1: icon.y1,
-				x2: icon.x2,
-				y2: icon.y2
-			});
-
-			var textCoordinate = React.createElement(
-				"text",
-				{
-					key: 2,
-					x: x,
-					y: y,
-					fontFamily: fontFamily,
-					fontSize: fontSize,
-					dy: ".32em",
-					fill: stroke,
-					textAnchor: textAnchor
-				},
-				text
-			);
-
-			return [textCoordinate, line];
-
-			// return <circle cx={x} cy={y} r={r}
-			// 			   strokeWidth={strokeWidth}
-			// 			   stroke={stroke}
-			// 			   strokeOpacity={strokeOpacity}
-			// 			   fill={fill}
-			// />;
-		}
-	}, {
-		key: "render",
-		value: function render() {
-			var interactiveCursorClass = this.props.interactiveCursorClass;
-			var show = this.props.show;
-			var _props2 = this.props,
-			    onHover = _props2.onHover,
-			    onUnHover = _props2.onUnHover,
-			    onClick = _props2.onClick;
+      // return <circle cx={x} cy={y} r={r}
+      // 			   strokeWidth={strokeWidth}
+      // 			   stroke={stroke}
+      // 			   strokeOpacity={strokeOpacity}
+      // 			   fill={fill}
+      // />;
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var interactiveCursorClass = this.props.interactiveCursorClass;
+      var show = this.props.show;
+      var _props3 = this.props,
+          onHover = _props3.onHover,
+          onUnHover = _props3.onUnHover,
+          onClick = _props3.onClick;
 
 
-			return show ? React.createElement(GenericChartComponent, { ref: this.saveNode,
-				interactiveCursorClass: interactiveCursorClass,
-				isHover: this.isHover,
-				onClickWhenHover: onClick,
-				svgDraw: this.renderSVG,
-				canvasDraw: this.drawOnCanvas,
-				canvasToDraw: getMouseCanvas,
-				onHover: onHover,
-				onUnHover: onUnHover,
-				drawOn: ["pan", "mousemove", "drag"]
-			}) : null;
-		}
-	}]);
+      return show ? React.createElement(GenericChartComponent, { ref: this.saveNode,
+        interactiveCursorClass: interactiveCursorClass,
+        isHover: this.isHover,
+        onClickWhenHover: onClick,
+        svgDraw: this.renderSVG,
+        canvasDraw: this.drawOnCanvas,
+        canvasToDraw: getMouseCanvas,
+        onHover: onHover,
+        onUnHover: onUnHover,
+        drawOn: ["pan", "mousemove", "drag"]
+      }) : null;
+    }
+  }]);
 
-	return ClickableShape;
+  return ClickableShape;
 }(Component);
 
 function helper(props, moreProps) {
-	var ctx = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-	var yValue = props.yValue,
-	    text = props.text,
-	    textBox = props.textBox,
-	    at = props.at;
-	var _moreProps$chartConfi = moreProps.chartConfig,
-	    yScale = _moreProps$chartConfi.yScale,
-	    width = _moreProps$chartConfi.width;
+  var ctx = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  var yValue = props.yValue,
+      textWidth = props.textWidth,
+      textBox = props.textBox,
+      at = props.at;
+  var _moreProps$chartConfi = moreProps.chartConfig,
+      yScale = _moreProps$chartConfi.yScale,
+      width = _moreProps$chartConfi.width;
 
+  var y = yScale(yValue);
+  var x = at === "left" ? textBox.left + textBox.padding.left : width - textBox.width - textBox.left + textBox.padding.left;
+  var textRightBorder = x + textWidth + textBox.padding.right;
+  var iconLeftBorder = textRightBorder + textBox.closeIcon.padding.left;
+  var icon = {
+    x1: iconLeftBorder,
+    y1: y - textBox.closeIcon.width / 2,
+    x2: iconLeftBorder + textBox.closeIcon.width,
+    y2: y + textBox.closeIcon.width / 2
+  };
 
-	var textWidth = 20;
-	var y = yScale(yValue);
-	var x = at === "left" ? textBox.left + textBox.padding.left : width - textBox.width - textBox.left + textBox.padding.left;
-
-	var textRightBorder = x + textWidth + textBox.padding.right;
-	var iconLeftBorder = textRightBorder + textBox.closeIcon.padding.left;
-	var icon = {
-		x1: iconLeftBorder,
-		y1: y - textBox.closeIcon.width / 2,
-		x2: iconLeftBorder + textBox.closeIcon.width,
-		y2: y + textBox.closeIcon.width / 2
-	};
-
-	return [x, y, icon];
+  return [x, y, icon];
 }
 
 ClickableShape.propTypes = {
-	at: PropTypes.oneOf(["left", "right"]),
-	stroke: PropTypes.string.isRequired,
-	strokeOpacity: PropTypes.number.isRequired,
-	strokeWidth: PropTypes.number.isRequired,
-	textBox: PropTypes.object.isRequired,
-	hovering: PropTypes.bool,
-	interactiveCursorClass: PropTypes.string,
-	show: PropTypes.bool,
-	onHover: PropTypes.func,
-	onUnHover: PropTypes.func,
-	onClick: PropTypes.func
+  at: PropTypes.oneOf(["left", "right"]),
+  stroke: PropTypes.string.isRequired,
+  strokeOpacity: PropTypes.number.isRequired,
+  strokeWidth: PropTypes.number.isRequired,
+  textBox: PropTypes.object.isRequired,
+  hovering: PropTypes.bool,
+  interactiveCursorClass: PropTypes.string,
+  show: PropTypes.bool,
+  onHover: PropTypes.func,
+  onUnHover: PropTypes.func,
+  onClick: PropTypes.func,
+  textWidth: PropTypes.number.isRequired
 };
 
 ClickableShape.defaultProps = {
-	at: 'right',
-	show: false,
-	fillOpacity: 1,
-	strokeOpacity: 1,
-	strokeWidth: 1
+  at: 'right',
+  show: false,
+  fillOpacity: 1,
+  strokeOpacity: 1,
+  strokeWidth: 1,
+  textWidth: 30
 };
 
 export default ClickableShape;

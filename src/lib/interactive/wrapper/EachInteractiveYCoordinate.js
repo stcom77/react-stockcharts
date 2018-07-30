@@ -96,7 +96,8 @@ class EachInteractiveYCoordinate extends Component {
 			edge,
 			textBox,
       rectWidth,
-      rectHeight
+      rectHeight,
+      textWidth
 		} = this.props;
 		const { hover, closeIconHover } = this.state;
 
@@ -138,6 +139,7 @@ class EachInteractiveYCoordinate extends Component {
           rectWidth={rectWidth}
           rectHeight={rectHeight}
           at={at}
+          textWidth={textWidth}
 				/>
 				<ClickableShape
 					show
@@ -156,7 +158,9 @@ class EachInteractiveYCoordinate extends Component {
 					onHover={this.handleCloseIconHover}
 					onUnHover={this.handleCloseIconHover}
 					onClick={this.handleDelete}
-				/>
+          at={at}
+          textWidth={textWidth}
+        />
 				{/* <HoverTextNearMouse
 					show={hoverTextEnabled && hover && !selected}
 					{...restHoverTextProps}
@@ -195,6 +199,7 @@ EachInteractiveYCoordinate.propTypes = {
 	onDelete: PropTypes.func.isRequired,
   rectWidth: PropTypes.number,
   rectHeight: PropTypes.number,
+  textWidth: PropTypes.number.isRequired,
 };
 
 EachInteractiveYCoordinate.defaultProps = {

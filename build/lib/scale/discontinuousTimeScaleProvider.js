@@ -112,7 +112,7 @@ var discontinuousIndexCalculatorLocalTime = discontinuousIndexCalculator.accumul
 	};
 	var level = evaluateLevel(row, nowDate, i, formatters);
 	if (level == null) {
-		console.log(row);
+		// console.log(row);
 	}
 	return _extends({}, row, { index: i + initialIndex }, level);
 });
